@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Lock, Stethoscope, Users, Shield, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Lock, Stethoscope, Users, Shield, AlertCircle, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 export default function RoleLoginModal({ onAuthenticate }) {
   const [selectedRole, setSelectedRole] = useState(null);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
 
@@ -59,6 +60,7 @@ export default function RoleLoginModal({ onAuthenticate }) {
     setSelectedRole(key);
     setIdentifier(roleConfig[key].defaultId);
     setPassword(roleConfig[key].defaultPass);
+    setShowPassword(false);
     setErrorMessage('');
   };
 
@@ -151,7 +153,7 @@ export default function RoleLoginModal({ onAuthenticate }) {
             </div>
           </div>
         ) : (
-          /* Step 2: Credential Verification Form */
+          /* Step 2: Credential Verification Form with Show/Hide Password Toggle */
           <div>
             <button 
               onClick={() => setSelectedRole(null)}
@@ -201,12 +203,34 @@ export default function RoleLoginModal({ onAuthenticate }) {
                       <label style={{ display: 'block', fontSize: '0.7rem', color: 'var(--text-dim)', marginBottom: '4px' }}>
                         {config.passLabel}
                       </label>
-                      <input 
-                        type="password"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                        style={{ width: '100%', background: '#04060c', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '8px', color: 'white', fontSize: '0.78rem', outline: 'none' }}
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <input 
+                          type={showPassword ? "text" : "password"}
+                          value={password}
+                          onChange={e => setPassword(e.target.value)}
+                          style={{ width: '100%', background: '#04060c', border: '1px solid var(--border-glass)', borderRadius: '8px', padding: '8px 36px 8px 8px', color: 'white', fontSize: '0.78rem', outline: 'none' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                            position: 'absolute',
+                            right: '8px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            background: 'none',
+                            border: 'none',
+                            color: 'var(--text-dim)',
+                            cursor: 'pointer',
+                            padding: '4px',
+                            display: 'flex',
+                            alignItems: 'center'
+                          }}
+                          title={showPassword ? "Hide Password" : "View Password"}
+                        >
+                          {showPassword ? <EyeOff style={{ width: '16px', height: '16px' }} /> : <Eye style={{ width: '16px', height: '16px' }} />}
+                        </button>
+                      </div>
                     </div>
 
                     {errorMessage && (
