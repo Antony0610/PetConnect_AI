@@ -8,11 +8,11 @@ import Volume4HealthSOS from './components/Volume4HealthSOS';
 import RoleVeterinarian from './components/RoleVeterinarian';
 import RoleRescueVolunteer from './components/RoleRescueVolunteer';
 import RoleAdministrator from './components/RoleAdministrator';
-import { ShieldAlert, CheckCircle, X, BellRing, LayoutDashboard, MapPin, Sparkles, Radio, Heart, Cpu, Wifi, Battery } from 'lucide-react';
+import { ShieldAlert, X, BellRing, Wifi, Battery } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard');
   const [activeRole, setActiveRole] = useState('owner');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [showSOSModal, setShowSOSModal] = useState(false);
   const [sosDispatched, setSosDispatched] = useState(false);
   const [notificationToast, setNotificationToast] = useState(null);
@@ -82,14 +82,13 @@ export default function App() {
         </div>
       </div>
 
-      {/* App Header with Role Selector */}
+      {/* Role Scoped Header */}
       <Navbar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
         activeRole={activeRole}
         setActiveRole={setActiveRole}
         onTriggerSOS={triggerSOS}
-        collarOnline={collarState.isStreaming}
       />
 
       {/* Real-Time Notification Toast */}
@@ -120,34 +119,32 @@ export default function App() {
         </div>
       )}
 
-      {/* Mobile App Body */}
+      {/* Strictly Scoped Role Content Body */}
       <div className="app-body">
-        {activeTab === 'dashboard' && (
-          <DashboardOverview 
-            petData={petData} 
-            collarState={collarState} 
-            onNavigate={(tab) => setActiveTab(tab)} 
-          />
-        )}
-        {activeTab === 'collar' && (
-          <Volume3SmartCollar 
-            collarState={collarState} 
-            setCollarState={setCollarState} 
-            onTriggerImpact={handleTriggerImpact} 
-          />
-        )}
-        {activeTab === 'ai' && <Volume2AIVision />}
-        {activeTab === 'services' && <Volume1CoreServices petData={petData} />}
-        {activeTab === 'sos' && <Volume4HealthSOS petData={petData} onTriggerSOS={triggerSOS} />}
-
-        {/* Dynamic Role Workspaces */}
-        {activeTab === 'role_view' && (
+        {/* 🐶 ROLE 1: PET OWNER MODULES ONLY */}
+        {activeRole === 'owner' && (
           <>
-            {activeRole === 'owner' && <DashboardOverview petData={petData} collarState={collarState} onNavigate={(tab) => setActiveTab(tab)} />}
-            {activeRole === 'vet' && <RoleVeterinarian petData={petData} />}
-            {activeRole === 'volunteer' && <RoleRescueVolunteer />}
-            {activeRole === 'admin' && <RoleAdministrator />}
+            {activeTab === 'dashboard' && <DashboardOverview petData={petData} collarState={collarState} onNavigate={(tab) => setActiveTab(tab)} />}
+            {activeTab === 'collar' && <Volume3SmartCollar collarState={collarState} setCollarState={setCollarState} onTriggerImpact={handleTriggerImpact} />}
+            {activeTab === 'ai' && <Volume2AIVision />}
+            {activeTab === 'services' && <Volume1CoreServices petData={petData} />}
+            {activeTab === 'sos' && <Volume4HealthSOS petData={petData} onTriggerSOS={triggerSOS} />}
           </>
+        )}
+
+        {/* 🩺 ROLE 2: VETERINARIAN MODULES ONLY */}
+        {activeRole === 'vet' && (
+          <RoleVeterinarian petData={petData} activeSubTab={activeTab} />
+        )}
+
+        {/* 🦺 ROLE 3: RESCUE VOLUNTEER MODULES ONLY */}
+        {activeRole === 'volunteer' && (
+          <RoleRescueVolunteer activeSubTab={activeTab} />
+        )}
+
+        {/* 🛡️ ROLE 4: ADMINISTRATOR MODULES ONLY */}
+        {activeRole === 'admin' && (
+          <RoleAdministrator activeSubTab={activeTab} />
         )}
       </div>
 
@@ -177,7 +174,7 @@ export default function App() {
               </div>
             ) : (
               <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                <button onClick={() => setShowSOSModal(false)} className="action-btn-secondary">Cancel</button>
+                <button onClick={() => setShowSOSModal(false)} className="btn-secondary">Cancel</button>
                 <button onClick={confirmSOSDispatch} className="btn-sos">Dispatch SOS</button>
               </div>
             )}

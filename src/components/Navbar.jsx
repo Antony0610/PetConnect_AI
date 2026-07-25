@@ -1,86 +1,112 @@
 import React from 'react';
-import { ShieldAlert, Cpu, Heart, Activity, Radio, MapPin, Sparkles, LayoutDashboard, UserCheck, Stethoscope, Users, Shield } from 'lucide-react';
+import { Activity, Radio, Sparkles, MapPin, Heart, Stethoscope, Syringe, Pill, FileText, CheckSquare, Users, Flag, Camera, AlertCircle, Home, Shield, UserCheck, FileSearch, Cpu, Megaphone } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveRole, onTriggerSOS, collarOnline }) {
-  const tabs = [
-    { id: 'dashboard', title: 'Dashboard', icon: LayoutDashboard },
-    { id: 'collar', title: 'GPS Collar', icon: Radio },
-    { id: 'ai', title: 'AI Studio', icon: Sparkles },
-    { id: 'services', title: 'Services', icon: MapPin },
-    { id: 'sos', title: 'SOS & Passport', icon: Heart },
-    { id: 'role_view', title: `${activeRole.toUpperCase()} View`, icon: UserCheck }
-  ];
+export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveRole, onTriggerSOS }) {
+  // Role-specific Navigation Tabs
+  const roleTabsMap = {
+    owner: [
+      { id: 'dashboard', title: 'Pet Profile', icon: Activity },
+      { id: 'collar', title: 'GPS Tracker', icon: Radio },
+      { id: 'ai', title: 'AI Assistant', icon: Sparkles },
+      { id: 'services', title: 'Book Vet', icon: MapPin },
+      { id: 'sos', title: 'Passport & SOS', icon: Heart }
+    ],
+    vet: [
+      { id: 'medical_history', title: 'Medical History', icon: Stethoscope },
+      { id: 'prescriptions', title: 'Prescriptions', icon: Pill },
+      { id: 'vaccinations', title: 'Vaccinations', icon: Syringe },
+      { id: 'reports', title: 'Lab Reports', icon: FileText },
+      { id: 'emergencies', title: 'Emergency Requests', icon: CheckSquare }
+    ],
+    volunteer: [
+      { id: 'rescue_requests', title: 'Rescue Requests', icon: Users },
+      { id: 'active_missions', title: 'Active Missions', icon: Flag },
+      { id: 'verify_photos', title: 'Upload Images', icon: Camera },
+      { id: 'report_stray', title: 'Report Injured', icon: AlertCircle },
+      { id: 'foster_care', title: 'Foster Care', icon: Home }
+    ],
+    admin: [
+      { id: 'user_mgmt', title: 'User Management', icon: Shield },
+      { id: 'volunteer_approvals', title: 'Approve Volunteers', icon: UserCheck },
+      { id: 'system_reports', title: 'System Reports', icon: FileSearch },
+      { id: 'ai_logs', title: 'AI System Logs', icon: Cpu },
+      { id: 'broadcasts', title: 'Broadcasts & Analytics', icon: Megaphone }
+    ]
+  };
+
+  const currentTabs = roleTabsMap[activeRole] || roleTabsMap.owner;
 
   return (
     <header style={{
       position: 'sticky',
       top: 0,
       zIndex: 50,
-      background: 'rgba(5, 8, 17, 0.85)',
+      background: 'rgba(5, 8, 17, 0.95)',
       backdropFilter: 'blur(24px)',
       borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-      padding: '12px 20px'
+      padding: '10px 16px'
     }}>
-      {/* Top Brand & Role Switcher */}
+      {/* Top Header: Brand & Clean Role Switcher */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: '10px'
+        marginBottom: '8px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: '10px',
+            width: '28px',
+            height: '28px',
+            borderRadius: '8px',
             background: 'linear-gradient(135deg, #6366f1, #ec4899)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: 'white'
           }}>
-            <Activity style={{ width: '18px', height: '18px' }} />
+            <Activity style={{ width: '16px', height: '16px' }} />
           </div>
           <div>
-            <h1 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'white', lineHeight: '1' }}>PetConnect AI</h1>
-            <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>RBAC Multi-Role Ecosystem</span>
+            <h1 style={{ fontSize: '1rem', fontWeight: 800, color: 'white', lineHeight: '1' }}>PetConnect AI</h1>
+            <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>Strict RBAC Portal</span>
           </div>
         </div>
 
-        {/* Role Selector Dropdown */}
+        {/* Clean Role Selector Dropdown (No 'Role' prefix) */}
         <select
           value={activeRole}
           onChange={(e) => {
-            setActiveRole(e.target.value);
-            setActiveTab('role_view');
+            const newRole = e.target.value;
+            setActiveRole(newRole);
+            setActiveTab(roleTabsMap[newRole][0].id);
           }}
           style={{
-            background: 'rgba(99, 102, 241, 0.2)',
+            background: 'rgba(99, 102, 241, 0.25)',
             color: '#a5b4fc',
             border: '1px solid rgba(99, 102, 241, 0.4)',
-            borderRadius: '10px',
-            padding: '4px 10px',
+            borderRadius: '8px',
+            padding: '4px 8px',
             fontSize: '0.75rem',
             fontWeight: 700,
             outline: 'none',
             cursor: 'pointer'
           }}
         >
-          <option value="owner">🐶 Role: Pet Owner</option>
-          <option value="vet">🩺 Role: Veterinarian</option>
-          <option value="volunteer">🦺 Role: Rescue Volunteer</option>
-          <option value="admin">🛡️ Role: Administrator</option>
+          <option value="owner">Pet Owner</option>
+          <option value="vet">Veterinarian</option>
+          <option value="volunteer">Rescue Volunteer</option>
+          <option value="admin">Administrator</option>
         </select>
       </div>
 
-      {/* Navigation Bar Pills */}
+      {/* Role-Specific Nav Tabs */}
       <div style={{
         display: 'flex',
-        gap: '6px',
+        gap: '4px',
         overflowX: 'auto',
         paddingBottom: '2px'
       }}>
-        {tabs.map((tab) => {
+        {currentTabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
           return (
@@ -90,13 +116,13 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveR
               style={{
                 flex: 1,
                 background: isActive 
-                  ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3))' 
+                  ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.35), rgba(139, 92, 246, 0.35))' 
                   : 'rgba(255, 255, 255, 0.03)',
                 color: isActive ? '#a5b4fc' : 'var(--text-muted)',
                 border: isActive ? '1px solid rgba(99, 102, 241, 0.5)' : '1px solid transparent',
-                padding: '6px 8px',
-                borderRadius: '10px',
-                fontSize: '0.72rem',
+                padding: '6px 6px',
+                borderRadius: '8px',
+                fontSize: '0.68rem',
                 fontWeight: isActive ? 700 : 500,
                 cursor: 'pointer',
                 display: 'flex',
@@ -107,7 +133,7 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveR
                 transition: 'all 0.2s ease'
               }}
             >
-              <Icon style={{ width: '14px', height: '14px', color: isActive ? '#818cf8' : 'var(--text-dim)' }} />
+              <Icon style={{ width: '13px', height: '13px', color: isActive ? '#818cf8' : 'var(--text-dim)' }} />
               {tab.title}
             </button>
           );
