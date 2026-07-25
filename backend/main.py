@@ -1,27 +1,32 @@
 from fastapi import FastAPI, Depends, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 import json
 import asyncio
+import math
 
 from backend.database import engine, get_db, Base
 from backend.models import Pet, User, GpsTelemetry, Alert, StrayReport
-from ai_engine.llm_health_assistant import LLMHealthAssistant
+
+# Import 6 AI Modules A-F
+from ai_engine.ai_pet_identity import AIPetIdentityEngine
 from ai_engine.siamese_pet_matcher import SiamesePetMatcher
-from ai_engine.breed_health_classifier import BreedHealthClassifier
+from ai_engine.rag_llm_assistant import RAGPetAssistant
 from ai_engine.activity_classifier import ActivityClassifier
+from ai_engine.adoption_recommender import AIAdoptionRecommender
+from ai_engine.rescue_priority_engine import RescuePriorityEngine
 
 # Initialize Database Tables
-Base.metadata.create_all(bind=engine)
+if engine:
+    Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="PetConnect AI Backend REST & WebSocket API",
-    description="End-to-End Backend & LLM Inference Pipeline for PetConnect AI",
-    version="1.0.0"
+    description="6 AI Modules A-F & ESP32 Telemetry Engine for PetConnect AI",
+    version="2.0.0"
 )
 
-# Enable CORS for Web & Mobile Clients
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,85 +35,80 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize AI Modules
-llm_assistant = LLMHealthAssistant()
-siamese_matcher = SiamesePetMatcher()
-breed_classifier = BreedHealthClassifier()
-motion_classifier = ActivityClassifier()
+# Instantiate AI Engines A-F
+biometric_identity_engine = AIPetIdentityEngine()
+lost_pet_matcher = SiamesePetMatcher()
+rag_assistant = RAGPetAssistant()
+activity_intelligence = ActivityClassifier()
+adoption_recommender = AIAdoptionRecommender()
+rescue_priority_engine = RescuePriorityEngine()
 
-# Pydantic Schemas
-class SymptomQuery(BaseModel):
+# Pydantic Query Models
+class BiometricRegQuery(BaseModel):
+    pet_name: str
+    front_face: Optional[str] = "bruno_face.jpg"
+    left_face: Optional[str] = "bruno_left.jpg"
+    right_face: Optional[str] = "bruno_right.jpg"
+    nose_print: Optional[str] = "bruno_nose.jpg"
+    full_body: Optional[str] = "bruno_body.jpg"
+
+class RAGQuery(BaseModel):
     user_query: str
+    pet_id: Optional[str] = "bruno"
 
-class ImageScanQuery(BaseModel):
-    image_path: str
+class AdoptionQuery(BaseModel):
+    house_size: Optional[str] = "Apartment"
+    work_hours: Optional[int] = 8
+    has_children: Optional[bool] = True
 
-class TelemetryPacket(BaseModel):
-    collar_id: str
-    latitude: float
-    longitude: float
-    accel_x: float
-    accel_y: float
-    accel_z: float
-    battery_pct: int
+class RescuePriorityQuery(BaseModel):
+    animal_condition: str
+    distance_km: Optional[float] = 1.5
 
-class SOSBroadcast(BaseModel):
-    pet_id: str
-    latitude: float
-    longitude: float
-    medical_notes: Optional[str] = None
-
-# API Routes
 @app.get("/")
 def root():
-    return {"status": "online", "message": "PetConnect AI FastAPI Backend & LLM Server Active"}
+    return {
+        "status": "online",
+        "system": "PetConnect AI 6-Module AI Subsystem",
+        "modules_active": ["Module A Identity", "Module B Lost Pet", "Module C RAG Assistant", "Module D Activity", "Module E Adoption", "Module F Rescue Priority"]
+    }
 
-# 1. LLM Health Symptom Triage Endpoint
-@app.post("/api/v1/ai/symptom-triage")
-def symptom_triage(data: SymptomQuery):
-    result = llm_assistant.triage_symptom(data.user_query)
-    return result
+# MODULE A: AI Pet Identity (Multi-Biometric Fusion)
+@app.post("/api/v1/ai/module-a/biometric-identity")
+def create_biometric_identity(data: BiometricRegQuery):
+    profile = biometric_identity_engine.generate_fused_identity_profile(data.model_dump())
+    return profile
 
-# 2. Vision Breed & Health Scan Endpoint
-@app.post("/api/v1/ai/breed-scan")
-def breed_scan(data: ImageScanQuery):
-    result = breed_classifier.classify_image(data.image_path)
-    return result
-
-# 3. Siamese Lost Pet Feature Match Endpoint
-@app.post("/api/v1/ai/match-lost-pet")
-def match_lost_pet(data: ImageScanQuery):
+# MODULE B: Lost Pet AI Search
+@app.post("/api/v1/ai/module-b/lost-pet-search")
+def search_lost_pet(found_image_url: str = "finder_photo.jpg"):
     sample_db = [
         {"id": 1, "name": "Bruno", "photo_url": "collar_hero.jpg"},
         {"id": 2, "name": "Max", "photo_url": "ai_matcher.jpg"}
     ]
-    matches = siamese_matcher.match_found_pet(data.image_path, sample_db)
-    return {"status": "success", "matches": matches}
+    matches = lost_pet_matcher.match_found_pet(found_image_url, sample_db)
+    return {"status": "success", "ranked_matches": matches}
 
-# 4. Telemetry Ingestion Endpoint (ESP32 Smart Collar)
-@app.post("/api/v1/telemetry/ingest")
-def ingest_telemetry(pkt: TelemetryPacket):
-    activity = motion_classifier.classify_motion(pkt.accel_x, pkt.accel_y, pkt.accel_z)
-    
-    # Check Geofence Breach (Home Radius 300m from 10.02345, 76.34567)
-    dist_meters = math.sqrt(((pkt.latitude - 10.02345) * 111000)**2 + ((pkt.longitude - 76.34567) * 111000)**2)
-    is_breached = dist_meters > 300.0
+# MODULE C: PetConnect AI Assistant (RAG Gemma 3 / Phi-3 Mini)
+@app.post("/api/v1/ai/module-c/rag-assistant")
+def query_rag_assistant(data: RAGQuery):
+    response = rag_assistant.generate_response(data.user_query, data.pet_id)
+    return response
 
-    return {
-        "status": "received",
-        "collar_id": pkt.collar_id,
-        "classified_activity": activity,
-        "geofence_breached": is_breached,
-        "distance_from_home_meters": round(dist_meters, 1)
-    }
+# MODULE D: Activity Intelligence
+@app.post("/api/v1/ai/module-d/activity-intelligence")
+def classify_activity(accel_x: float, accel_y: float, accel_z: float):
+    activity = activity_intelligence.classify_motion(accel_x, accel_y, accel_z)
+    return {"classified_activity": activity}
 
-# 5. Emergency SOS Dispatch Endpoint
-@app.post("/api/v1/sos/broadcast")
-def broadcast_sos(data: SOSBroadcast):
-    return {
-        "status": "dispatched",
-        "message": f"Emergency SOS broadcasted for pet {data.pet_id} to 32 nearby clinics.",
-        "coordinates": {"lat": data.latitude, "lng": data.longitude}
-    }
+# MODULE E: AI Adoption Recommendation
+@app.post("/api/v1/ai/module-e/adoption-recommendation")
+def recommend_adoption(data: AdoptionQuery):
+    recommendations = adoption_recommender.recommend_breeds(data.model_dump())
+    return recommendations
 
-import math
+# MODULE F: Rescue Priority Engine
+@app.post("/api/v1/ai/module-f/rescue-priority")
+def calculate_rescue_priority(data: RescuePriorityQuery):
+    priority = rescue_priority_engine.calculate_priority_score(data.model_dump())
+    return priority
