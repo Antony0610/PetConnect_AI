@@ -1,14 +1,14 @@
 import React from 'react';
-import { ShieldAlert, Cpu, Heart, Activity, Radio, MapPin, Sparkles, LayoutDashboard } from 'lucide-react';
+import { ShieldAlert, Cpu, Heart, Activity, Radio, MapPin, Sparkles, LayoutDashboard, UserCheck, Stethoscope, Users, Shield } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, onTriggerSOS, collarOnline }) {
+export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveRole, onTriggerSOS, collarOnline }) {
   const tabs = [
     { id: 'dashboard', title: 'Dashboard', icon: LayoutDashboard },
-    { id: 'services', title: 'Services & GIS Map', icon: MapPin },
+    { id: 'collar', title: 'GPS Collar', icon: Radio },
     { id: 'ai', title: 'AI Studio', icon: Sparkles },
-    { id: 'collar', title: 'Smart Collar IoT', icon: Radio },
+    { id: 'services', title: 'Services', icon: MapPin },
     { id: 'sos', title: 'SOS & Passport', icon: Heart },
-    { id: 'analytics', title: 'Analytics', icon: Cpu }
+    { id: 'role_view', title: `${activeRole.toUpperCase()} View`, icon: UserCheck }
   ];
 
   return (
@@ -19,84 +19,64 @@ export default function Navbar({ activeTab, setActiveTab, onTriggerSOS, collarOn
       background: 'rgba(5, 8, 17, 0.85)',
       backdropFilter: 'blur(24px)',
       borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-      padding: '14px 28px'
+      padding: '12px 20px'
     }}>
+      {/* Top Brand & Role Switcher */}
       <div style={{
-        maxWidth: '1440px',
-        margin: '0 auto',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '16px'
+        marginBottom: '10px'
       }}>
-        {/* Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            width: '44px',
-            height: '44px',
-            borderRadius: '14px',
-            background: 'linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899)',
+            width: '32px',
+            height: '32px',
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #6366f1, #ec4899)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: '0 0 25px rgba(99, 102, 241, 0.5)'
+            color: 'white'
           }}>
-            <Activity style={{ color: 'white', width: '26px', height: '26px' }} />
+            <Activity style={{ width: '18px', height: '18px' }} />
           </div>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <h1 style={{ fontSize: '1.45rem', fontWeight: 800 }} className="gradient-title">PetConnect AI</h1>
-              <span className="status-pill status-online" style={{ fontSize: '0.7rem' }}>PRO ECOSYSTEM</span>
-            </div>
-            <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-              Next-Gen AI + ESP32 Smart Collar Telemetry & Health Platform
-            </p>
+            <h1 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'white', lineHeight: '1' }}>PetConnect AI</h1>
+            <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>RBAC Multi-Role Ecosystem</span>
           </div>
         </div>
 
-        {/* Live ESP32 Status Pill & Emergency SOS Trigger */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(255, 255, 255, 0.04)',
-            padding: '8px 16px',
-            borderRadius: '999px',
-            border: '1px solid var(--border-glass)',
-            fontSize: '0.8rem'
-          }}>
-            <span style={{
-              width: '8px',
-              height: '8px',
-              borderRadius: '50%',
-              backgroundColor: collarOnline ? '#10b981' : '#f59e0b',
-              boxShadow: collarOnline ? '0 0 12px #10b981' : 'none'
-            }}></span>
-            <span style={{ color: 'var(--text-muted)' }}>ESP32 Stream:</span>
-            <strong style={{ color: collarOnline ? '#34d399' : '#fbbf24' }}>
-              {collarOnline ? '30s Active' : 'Offline'}
-            </strong>
-          </div>
-
-          <button 
-            onClick={onTriggerSOS}
-            className="action-btn-danger"
-            style={{ padding: '9px 20px', fontSize: '0.85rem' }}
-          >
-            <ShieldAlert style={{ width: '18px', height: '18px' }} />
-            EMERGENCY SOS
-          </button>
-        </div>
+        {/* Role Selector Dropdown */}
+        <select
+          value={activeRole}
+          onChange={(e) => {
+            setActiveRole(e.target.value);
+            setActiveTab('role_view');
+          }}
+          style={{
+            background: 'rgba(99, 102, 241, 0.2)',
+            color: '#a5b4fc',
+            border: '1px solid rgba(99, 102, 241, 0.4)',
+            borderRadius: '10px',
+            padding: '4px 10px',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+            outline: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          <option value="owner">🐶 Role: Pet Owner</option>
+          <option value="vet">🩺 Role: Veterinarian</option>
+          <option value="volunteer">🦺 Role: Rescue Volunteer</option>
+          <option value="admin">🛡️ Role: Administrator</option>
+        </select>
       </div>
 
-      {/* Modern Navigation Pills */}
+      {/* Navigation Bar Pills */}
       <div style={{
-        maxWidth: '1440px',
-        margin: '16px auto 0',
         display: 'flex',
-        gap: '8px',
+        gap: '6px',
         overflowX: 'auto',
         paddingBottom: '2px'
       }}>
@@ -108,25 +88,26 @@ export default function Navbar({ activeTab, setActiveTab, onTriggerSOS, collarOn
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               style={{
+                flex: 1,
                 background: isActive 
-                  ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(139, 92, 246, 0.25))' 
+                  ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(139, 92, 246, 0.3))' 
                   : 'rgba(255, 255, 255, 0.03)',
                 color: isActive ? '#a5b4fc' : 'var(--text-muted)',
                 border: isActive ? '1px solid rgba(99, 102, 241, 0.5)' : '1px solid transparent',
-                padding: '9px 18px',
-                borderRadius: '12px',
-                fontSize: '0.85rem',
+                padding: '6px 8px',
+                borderRadius: '10px',
+                fontSize: '0.72rem',
                 fontWeight: isActive ? 700 : 500,
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
+                justifyContent: 'center',
+                gap: '4px',
                 whiteSpace: 'nowrap',
-                transition: 'all 0.2s ease',
-                boxShadow: isActive ? '0 4px 16px rgba(99, 102, 241, 0.25)' : 'none'
+                transition: 'all 0.2s ease'
               }}
             >
-              <Icon style={{ width: '17px', height: '17px', color: isActive ? '#818cf8' : 'var(--text-dim)' }} />
+              <Icon style={{ width: '14px', height: '14px', color: isActive ? '#818cf8' : 'var(--text-dim)' }} />
               {tab.title}
             </button>
           );

@@ -8,7 +8,8 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True)
     name = Column(String)
-    role = Column(String, default="owner") # owner, vet, volunteer, shelter
+    role = Column(String, default="owner") # owner, vet, volunteer, admin
+    is_approved = Column(Boolean, default=True) # Approval required for vets/volunteers
     phone = Column(String)
 
 class Pet(Base):
@@ -23,33 +24,40 @@ class Pet(Base):
     qr_passport_id = Column(String, unique=True, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-class GpsTelemetry(Base):
-    __tablename__ = "gps_telemetry"
-    id = Column(Integer, primary_key=True, index=True)
-    collar_id = Column(String, index=True)
-    latitude = Column(Float)
-    longitude = Column(Float)
-    accel_x = Column(Float)
-    accel_y = Column(Float)
-    accel_z = Column(Float)
-    battery_pct = Column(Integer)
-    classified_activity = Column(String)
-    timestamp = Column(DateTime, default=datetime.utcnow)
-
-class Alert(Base):
-    __tablename__ = "alerts"
+class Prescription(Base):
+    __tablename__ = "prescriptions"
     id = Column(Integer, primary_key=True, index=True)
     pet_id = Column(Integer, ForeignKey("pets.id"))
-    alert_type = Column(String) # GEOFENCE_BREACH, IMPACT_SPIKE, SOS
-    message = Column(Text)
-    is_resolved = Column(Boolean, default=False)
+    vet_name = Column(String)
+    medication = Column(String)
+    dosage = Column(String)
+    instructions = Column(Text)
+    date = Column(DateTime, default=datetime.utcnow)
+
+class VaccinationRecord(Base):
+    __tablename__ = "vaccination_records"
+    id = Column(Integer, primary_key=True, index=True)
+    pet_id = Column(Integer, ForeignKey("pets.id"))
+    vaccine_name = Column(String)
+    administered_date = Column(DateTime, default=datetime.utcnow)
+    expiry_date = Column(DateTime)
+    vet_signature = Column(String)
+
+class RescueMission(Base):
+    __tablename__ = "rescue_missions"
+    id = Column(Integer, primary_key=True, index=True)
+    report_title = Column(String)
+    location = Column(String)
+    assigned_volunteer_id = Column(Integer, ForeignKey("users.id"), nullable=True)
+    status = Column(String, default="Pending") # Pending, In Progress, Rescued, Fostered
+    image_url = Column(String, nullable=True)
+    foster_details = Column(String, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
 
-class StrayReport(Base):
-    __tablename__ = "stray_reports"
+class BroadcastNotification(Base):
+    __tablename__ = "broadcast_notifications"
     id = Column(Integer, primary_key=True, index=True)
-    issue_type = Column(String)
-    location = Column(String)
-    status = Column(String, default="Open")
-    reporter_name = Column(String)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    title = Column(String)
+    message = Column(Text)
+    target_role = Column(String, default="all")
+    created_at = Column(DateTime, default=datetime.utcnow)

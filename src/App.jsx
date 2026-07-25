@@ -5,11 +5,14 @@ import Volume1CoreServices from './components/Volume1CoreServices';
 import Volume2AIVision from './components/Volume2AIVision';
 import Volume3SmartCollar from './components/Volume3SmartCollar';
 import Volume4HealthSOS from './components/Volume4HealthSOS';
-import Volume5ArchitectureDoc from './components/Volume5ArchitectureDoc';
+import RoleVeterinarian from './components/RoleVeterinarian';
+import RoleRescueVolunteer from './components/RoleRescueVolunteer';
+import RoleAdministrator from './components/RoleAdministrator';
 import { ShieldAlert, CheckCircle, X, BellRing, LayoutDashboard, MapPin, Sparkles, Radio, Heart, Cpu, Wifi, Battery } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeRole, setActiveRole] = useState('owner');
   const [showSOSModal, setShowSOSModal] = useState(false);
   const [sosDispatched, setSosDispatched] = useState(false);
   const [notificationToast, setNotificationToast] = useState(null);
@@ -68,14 +71,6 @@ export default function App() {
     });
   };
 
-  const navItems = [
-    { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
-    { id: 'collar', label: 'GPS Collar', icon: Radio },
-    { id: 'ai', label: 'AI Studio', icon: Sparkles },
-    { id: 'services', label: 'Services', icon: MapPin },
-    { id: 'sos', label: 'SOS & QR', icon: Heart },
-  ];
-
   return (
     <div className="mobile-app-shell">
       {/* Mobile Top Status Bar */}
@@ -87,37 +82,21 @@ export default function App() {
         </div>
       </div>
 
-      {/* App Mobile Header */}
-      <div className="app-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '8px',
-            background: 'linear-gradient(135deg, #6366f1, #ec4899)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white'
-          }}>
-            <Radio style={{ width: '16px', height: '16px' }} />
-          </div>
-          <div>
-            <h2 style={{ fontSize: '1rem', color: 'white', lineHeight: '1' }}>PetConnect AI</h2>
-            <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>Smart Collar App</span>
-          </div>
-        </div>
-
-        <button onClick={triggerSOS} className="btn-sos">
-          <ShieldAlert style={{ width: '14px', height: '14px' }} /> SOS
-        </button>
-      </div>
+      {/* App Header with Role Selector */}
+      <Navbar 
+        activeTab={activeTab} 
+        setActiveTab={setActiveTab}
+        activeRole={activeRole}
+        setActiveRole={setActiveRole}
+        onTriggerSOS={triggerSOS}
+        collarOnline={collarState.isStreaming}
+      />
 
       {/* Real-Time Notification Toast */}
       {notificationToast && (
         <div style={{
           position: 'absolute',
-          top: '60px',
+          top: '90px',
           left: '12px',
           right: '12px',
           zIndex: 90,
@@ -160,25 +139,16 @@ export default function App() {
         {activeTab === 'ai' && <Volume2AIVision />}
         {activeTab === 'services' && <Volume1CoreServices petData={petData} />}
         {activeTab === 'sos' && <Volume4HealthSOS petData={petData} onTriggerSOS={triggerSOS} />}
-        {activeTab === 'analytics' && <Volume5ArchitectureDoc />}
-      </div>
 
-      {/* Bottom Navigation Bar */}
-      <div className="bottom-nav-bar">
-        {navItems.map(item => {
-          const Icon = item.icon;
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
-            >
-              <Icon style={{ width: '20px', height: '20px' }} />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
+        {/* Dynamic Role Workspaces */}
+        {activeTab === 'role_view' && (
+          <>
+            {activeRole === 'owner' && <DashboardOverview petData={petData} collarState={collarState} onNavigate={(tab) => setActiveTab(tab)} />}
+            {activeRole === 'vet' && <RoleVeterinarian petData={petData} />}
+            {activeRole === 'volunteer' && <RoleRescueVolunteer />}
+            {activeRole === 'admin' && <RoleAdministrator />}
+          </>
+        )}
       </div>
 
       {/* SOS Emergency Modal */}
@@ -207,7 +177,7 @@ export default function App() {
               </div>
             ) : (
               <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                <button onClick={() => setShowSOSModal(false)} className="btn-secondary">Cancel</button>
+                <button onClick={() => setShowSOSModal(false)} className="action-btn-secondary">Cancel</button>
                 <button onClick={confirmSOSDispatch} className="btn-sos">Dispatch SOS</button>
               </div>
             )}
