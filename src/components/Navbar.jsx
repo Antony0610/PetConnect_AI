@@ -1,7 +1,7 @@
 import React from 'react';
-import { Activity, Radio, Sparkles, MapPin, Heart, Stethoscope, Syringe, Pill, FileText, CheckSquare, Users, Flag, Camera, AlertCircle, Home, Shield, UserCheck, FileSearch, Cpu, Megaphone } from 'lucide-react';
+import { Activity, Radio, Sparkles, MapPin, Heart, Stethoscope, Syringe, Pill, FileText, CheckSquare, Users, Flag, Camera, AlertCircle, Home, Shield, UserCheck, FileSearch, Cpu, Megaphone, Lock, ShieldCheck } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveRole, onTriggerSOS }) {
+export default function Navbar({ activeTab, setActiveTab, activeRole, authSessions, onRequestRoleChange }) {
   // Role-specific Navigation Tabs
   const roleTabsMap = {
     owner: [
@@ -35,6 +35,7 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveR
   };
 
   const currentTabs = roleTabsMap[activeRole] || roleTabsMap.owner;
+  const isCurrentRoleVerified = !!authSessions[activeRole];
 
   return (
     <header style={{
@@ -46,7 +47,7 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveR
       borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
       padding: '10px 16px'
     }}>
-      {/* Top Header: Brand & Clean Role Switcher */}
+      {/* Top Header: Brand & Clean Role Verification Switcher */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -68,22 +69,21 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveR
           </div>
           <div>
             <h1 style={{ fontSize: '1rem', fontWeight: 800, color: 'white', lineHeight: '1' }}>PetConnect AI</h1>
-            <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>Strict RBAC Portal</span>
+            <span style={{ fontSize: '0.62rem', color: isCurrentRoleVerified ? '#34d399' : '#fbbf24', display: 'flex', alignItems: 'center', gap: '3px' }}>
+              {isCurrentRoleVerified ? <ShieldCheck style={{ width: '10px', height: '10px' }} /> : <Lock style={{ width: '10px', height: '10px' }} />}
+              {isCurrentRoleVerified ? 'Verified Credentials' : 'Auth Required'}
+            </span>
           </div>
         </div>
 
-        {/* Clean Role Selector Dropdown (No 'Role' prefix) */}
+        {/* Clean Role Selector Dropdown (Triggers Verification Challenge) */}
         <select
           value={activeRole}
-          onChange={(e) => {
-            const newRole = e.target.value;
-            setActiveRole(newRole);
-            setActiveTab(roleTabsMap[newRole][0].id);
-          }}
+          onChange={(e) => onRequestRoleChange(e.target.value)}
           style={{
-            background: 'rgba(99, 102, 241, 0.25)',
-            color: '#a5b4fc',
-            border: '1px solid rgba(99, 102, 241, 0.4)',
+            background: isCurrentRoleVerified ? 'rgba(16, 185, 129, 0.2)' : 'rgba(99, 102, 241, 0.25)',
+            color: isCurrentRoleVerified ? '#34d399' : '#a5b4fc',
+            border: isCurrentRoleVerified ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(99, 102, 241, 0.4)',
             borderRadius: '8px',
             padding: '4px 8px',
             fontSize: '0.75rem',
@@ -92,10 +92,10 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, setActiveR
             cursor: 'pointer'
           }}
         >
-          <option value="owner">Pet Owner</option>
-          <option value="vet">Veterinarian</option>
-          <option value="volunteer">Rescue Volunteer</option>
-          <option value="admin">Administrator</option>
+          <option value="owner">Pet Owner {authSessions.owner ? '✓' : '🔒'}</option>
+          <option value="vet">Veterinarian {authSessions.vet ? '✓' : '🔒'}</option>
+          <option value="volunteer">Rescue Volunteer {authSessions.volunteer ? '✓' : '🔒'}</option>
+          <option value="admin">Administrator {authSessions.admin ? '✓' : '🔒'}</option>
         </select>
       </div>
 

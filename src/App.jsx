@@ -8,14 +8,32 @@ import Volume4HealthSOS from './components/Volume4HealthSOS';
 import RoleVeterinarian from './components/RoleVeterinarian';
 import RoleRescueVolunteer from './components/RoleRescueVolunteer';
 import RoleAdministrator from './components/RoleAdministrator';
-import { ShieldAlert, X, BellRing, Wifi, Battery } from 'lucide-react';
+import RoleLoginModal from './components/RoleLoginModal';
+import { ShieldAlert, X, BellRing, Wifi, Battery, Lock, ShieldCheck } from 'lucide-react';
 
 export default function App() {
   const [activeRole, setActiveRole] = useState('owner');
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [pendingRole, setPendingRole] = useState(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSOSModal, setShowSOSModal] = useState(false);
   const [sosDispatched, setSosDispatched] = useState(false);
   const [notificationToast, setNotificationToast] = useState(null);
+
+  // Auth Sessions per role
+  const [authSessions, setAuthSessions] = useState({
+    owner: { badgeId: "owner@petconnect.ai", verifiedAt: "09:41 AM" },
+    vet: null,
+    volunteer: null,
+    admin: null
+  });
+
+  const roleFirstTabs = {
+    owner: 'dashboard',
+    vet: 'medical_history',
+    volunteer: 'rescue_requests',
+    admin: 'user_mgmt'
+  };
 
   // Shared Pet Profile State
   const [petData] = useState({
@@ -41,6 +59,34 @@ export default function App() {
     geofenceBreached: false,
     lastUpdated: new Date().toLocaleTimeString()
   });
+
+  const handleRoleChangeRequest = (roleKey) => {
+    if (authSessions[roleKey]) {
+      // Role already authenticated -> Switch directly
+      setActiveRole(roleKey);
+      setActiveTab(roleFirstTabs[roleKey]);
+    } else {
+      // Role requires login verification challenge
+      setPendingRole(roleKey);
+      setShowLoginModal(true);
+    }
+  };
+
+  const handleAuthenticateSuccess = (roleKey, sessionData) => {
+    setAuthSessions(prev => ({
+      ...prev,
+      [roleKey]: sessionData
+    }));
+    setActiveRole(roleKey);
+    setActiveTab(roleFirstTabs[roleKey]);
+    setShowLoginModal(false);
+    setPendingRole(null);
+
+    setNotificationToast({
+      title: "🔐 IDENTITY VERIFIED",
+      message: `Successfully authenticated as ${roleKey.toUpperCase()} (${sessionData.badgeId})`
+    });
+  };
 
   const triggerSOS = () => {
     setShowSOSModal(true);
@@ -82,13 +128,13 @@ export default function App() {
         </div>
       </div>
 
-      {/* Role Scoped Header */}
+      {/* Header with Authenticated Role Control */}
       <Navbar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab}
         activeRole={activeRole}
-        setActiveRole={setActiveRole}
-        onTriggerSOS={triggerSOS}
+        authSessions={authSessions}
+        onRequestRoleChange={handleRoleChangeRequest}
       />
 
       {/* Real-Time Notification Toast */}
@@ -100,17 +146,17 @@ export default function App() {
           right: '12px',
           zIndex: 90,
           background: 'rgba(13, 19, 35, 0.98)',
-          border: '1px solid rgba(239, 68, 68, 0.6)',
+          border: '1px solid rgba(99, 102, 241, 0.6)',
           borderRadius: '14px',
           padding: '12px 14px',
           display: 'flex',
           alignItems: 'center',
           gap: '10px',
-          boxShadow: '0 8px 25px rgba(239, 68, 68, 0.4)'
+          boxShadow: '0 8px 25px rgba(99, 102, 241, 0.4)'
         }}>
-          <BellRing style={{ width: '20px', height: '20px', color: '#f87171' }} />
+          <ShieldCheck style={{ width: '20px', height: '20px', color: '#34d399' }} />
           <div style={{ flex: 1 }}>
-            <h5 style={{ fontSize: '0.8rem', color: '#fca5a5' }}>{notificationToast.title}</h5>
+            <h5 style={{ fontSize: '0.8rem', color: '#a5b4fc' }}>{notificationToast.title}</h5>
             <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{notificationToast.message}</p>
           </div>
           <button onClick={() => setNotificationToast(null)} style={{ background: 'none', border: 'none', color: 'var(--text-dim)' }}>
@@ -121,7 +167,7 @@ export default function App() {
 
       {/* Strictly Scoped Role Content Body */}
       <div className="app-body">
-        {/* 🐶 ROLE 1: PET OWNER MODULES ONLY */}
+        {/* 🐶 ROLE 1: PET OWNER MODULES */}
         {activeRole === 'owner' && (
           <>
             {activeTab === 'dashboard' && <DashboardOverview petData={petData} collarState={collarState} onNavigate={(tab) => setActiveTab(tab)} />}
@@ -132,21 +178,30 @@ export default function App() {
           </>
         )}
 
-        {/* 🩺 ROLE 2: VETERINARIAN MODULES ONLY */}
+        {/* 🩺 ROLE 2: VETERINARIAN MODULES */}
         {activeRole === 'vet' && (
           <RoleVeterinarian petData={petData} activeSubTab={activeTab} />
         )}
 
-        {/* 🦺 ROLE 3: RESCUE VOLUNTEER MODULES ONLY */}
+        {/* 🦺 ROLE 3: RESCUE VOLUNTEER MODULES */}
         {activeRole === 'volunteer' && (
           <RoleRescueVolunteer activeSubTab={activeTab} />
         )}
 
-        {/* 🛡️ ROLE 4: ADMINISTRATOR MODULES ONLY */}
+        {/* 🛡️ ROLE 4: ADMINISTRATOR MODULES */}
         {activeRole === 'admin' && (
           <RoleAdministrator activeSubTab={activeTab} />
         )}
       </div>
+
+      {/* Role Verification & Login Challenge Modal */}
+      {showLoginModal && pendingRole && (
+        <RoleLoginModal 
+          targetRole={pendingRole}
+          onAuthenticate={handleAuthenticateSuccess}
+          onClose={() => setShowLoginModal(false)}
+        />
+      )}
 
       {/* SOS Emergency Modal */}
       {showSOSModal && (
