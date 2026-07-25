@@ -41,34 +41,38 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF0F172A),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: const Row(
           children: [
-            Icon(Icons.warning_amber_rounded, color: AppTheme.danger),
-            SizedBox(width: 8),
-            Text("Confirm SOS Alert?", style: TextStyle(color: Colors.white, fontSize: 16)),
+            Icon(Icons.warning_amber_rounded, color: AppTheme.danger, size: 28),
+            SizedBox(width: 10),
+            Text("Confirm Emergency SOS?", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
           ],
         ),
         content: const Text(
-          "Broadcast Bruno's live GPS collar location and QR health record to nearby emergency vet clinics?",
-          style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+          "Broadcast Bruno's live GPS collar location and QR health record to 32 nearby emergency vet clinics and rescue volunteers?",
+          style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13, height: 1.4),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text("Cancel"),
+            child: const Text("Cancel", style: TextStyle(color: Color(0xFF94A3B8))),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppTheme.danger),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.danger,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
             onPressed: () {
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text("🚨 Emergency SOS Dispatched to 32 nearby clinics & volunteers!"),
+                  content: Text("🚨 Emergency SOS Dispatched to nearby clinics & volunteers!"),
                   backgroundColor: AppTheme.danger,
                 ),
               );
             },
-            child: const Text("Dispatch SOS", style: TextStyle(color: Colors.white)),
+            child: const Text("Dispatch SOS", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -87,24 +91,29 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xEB070913),
+        backgroundColor: const Color(0xEB050811),
         elevation: 0,
         title: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(6),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.primary,
-                borderRadius: BorderRadius.circular(10),
+                gradient: const LinearGradient(
+                  colors: [AppTheme.primary, AppTheme.accentPurple],
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: const [
+                  BoxShadow(color: Color(0x406366F1), blurRadius: 12),
+                ],
               ),
               child: const Icon(Icons.pets, color: Colors.white, size: 20),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: 12),
             const Column(
               crossAxisAlignment: CrossAlignment.start,
               children: [
-                Text("PetConnect AI", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                Text("5-Volume Flutter Application", style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
+                Text("PetConnect AI", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Colors.white)),
+                Text("Smart Pet Collar & Ecosystem", style: TextStyle(fontSize: 10, color: Color(0xFF94A3B8))),
               ],
             ),
           ],
@@ -122,17 +131,17 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
         currentIndex: _currentIndex,
         onTap: (idx) => setState(() => _currentIndex = idx),
         type: BottomNavigationBarType.fixed,
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFF0D1323),
         selectedItemColor: AppTheme.primary,
         unselectedItemColor: const Color(0xFF64748B),
         selectedFontSize: 11,
         unselectedFontSize: 10,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: "Vol 1 Core"),
-          BottomNavigationBarItem(icon: Icon(Icons.psychology), label: "Vol 2 AI"),
-          BottomNavigationBarItem(icon: Icon(Icons.radio), label: "Vol 3 Collar"),
-          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: "Vol 4 SOS"),
-          BottomNavigationBarItem(icon: Icon(Icons.developer_board), label: "Vol 5 Arch"),
+          BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: "Dashboard"),
+          BottomNavigationBarItem(icon: Icon(Icons.psychology_rounded), label: "AI Studio"),
+          BottomNavigationBarItem(icon: Icon(Icons.radio_rounded), label: "Collar Tracker"),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite_rounded), label: "SOS Passport"),
+          BottomNavigationBarItem(icon: Icon(Icons.analytics_rounded), label: "Analytics"),
         ],
       ),
     );
