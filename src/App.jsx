@@ -6,7 +6,7 @@ import Volume2AIVision from './components/Volume2AIVision';
 import Volume3SmartCollar from './components/Volume3SmartCollar';
 import Volume4HealthSOS from './components/Volume4HealthSOS';
 import Volume5ArchitectureDoc from './components/Volume5ArchitectureDoc';
-import { ShieldAlert, CheckCircle, X, BellRing } from 'lucide-react';
+import { ShieldAlert, CheckCircle, X, BellRing, LayoutDashboard, MapPin, Sparkles, Radio, Heart, Cpu, Wifi, Battery } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -47,10 +47,10 @@ export default function App() {
   const confirmSOSDispatch = () => {
     setSosDispatched(true);
     setNotificationToast({
-      title: "🚨 EMERGENCY SOS BROADCAST DISPATCHED",
-      message: "GPS Coordinates & Medical Passport sent to 32 nearby Vets and Rescue Volunteers!"
+      title: "🚨 EMERGENCY SOS BROADCASTED",
+      message: "GPS & QR Passport dispatched to nearby emergency clinics!"
     });
-    setTimeout(() => setShowSOSModal(false), 2500);
+    setTimeout(() => setShowSOSModal(false), 2200);
   };
 
   const handleTriggerImpact = () => {
@@ -63,69 +63,86 @@ export default function App() {
     }));
 
     setNotificationToast({
-      title: "⚠️ ACCIDENT / Sudden Impact Spike!",
-      message: "ESP32 Accelerometer recorded 8.1g impact spike followed by static state. Check Bruno immediately!"
+      title: "⚠️ ACCIDENT / Impact Spike!",
+      message: "ESP32 recorded 8.1g impact spike. Check Bruno immediately!"
     });
   };
 
-  return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Top Navbar Navigation */}
-      <Navbar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab} 
-        onTriggerSOS={triggerSOS}
-        collarOnline={collarState.isStreaming}
-      />
+  const navItems = [
+    { id: 'dashboard', label: 'Home', icon: LayoutDashboard },
+    { id: 'collar', label: 'GPS Collar', icon: Radio },
+    { id: 'ai', label: 'AI Studio', icon: Sparkles },
+    { id: 'services', label: 'Services', icon: MapPin },
+    { id: 'sos', label: 'SOS & QR', icon: Heart },
+  ];
 
-      {/* Real-time Notification Toast */}
-      {notificationToast && (
-        <div style={{
-          position: 'fixed',
-          bottom: '24px',
-          right: '24px',
-          zIndex: 100,
-          background: 'rgba(13, 19, 35, 0.95)',
-          border: '1px solid rgba(239, 68, 68, 0.5)',
-          backdropFilter: 'blur(24px)',
-          padding: '18px 24px',
-          borderRadius: '20px',
-          boxShadow: '0 12px 40px rgba(239, 68, 68, 0.4)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '14px',
-          maxWidth: '440px',
-          animation: 'slideIn 0.3s ease'
-        }}>
+  return (
+    <div className="mobile-app-shell">
+      {/* Mobile Top Status Bar */}
+      <div className="mobile-status-bar">
+        <span>9:41</span>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <Wifi style={{ width: '13px', height: '13px' }} />
+          <Battery style={{ width: '15px', height: '15px' }} />
+        </div>
+      </div>
+
+      {/* App Mobile Header */}
+      <div className="app-header">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
-            background: 'rgba(239, 68, 68, 0.2)',
-            padding: '12px',
-            borderRadius: '50%',
-            color: '#f87171'
+            width: '28px',
+            height: '28px',
+            borderRadius: '8px',
+            background: 'linear-gradient(135deg, #6366f1, #ec4899)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white'
           }}>
-            <BellRing style={{ width: '24px', height: '24px' }} />
+            <Radio style={{ width: '16px', height: '16px' }} />
           </div>
           <div>
-            <h4 style={{ fontSize: '0.95rem', color: '#fca5a5', fontWeight: 700 }}>{notificationToast.title}</h4>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{notificationToast.message}</p>
+            <h2 style={{ fontSize: '1rem', color: 'white', lineHeight: '1' }}>PetConnect AI</h2>
+            <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>Smart Collar App</span>
           </div>
-          <button 
-            onClick={() => setNotificationToast(null)}
-            style={{ background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer', marginLeft: 'auto' }}
-          >
-            <X style={{ width: '18px', height: '18px' }} />
+        </div>
+
+        <button onClick={triggerSOS} className="btn-sos">
+          <ShieldAlert style={{ width: '14px', height: '14px' }} /> SOS
+        </button>
+      </div>
+
+      {/* Real-Time Notification Toast */}
+      {notificationToast && (
+        <div style={{
+          position: 'absolute',
+          top: '60px',
+          left: '12px',
+          right: '12px',
+          zIndex: 90,
+          background: 'rgba(13, 19, 35, 0.98)',
+          border: '1px solid rgba(239, 68, 68, 0.6)',
+          borderRadius: '14px',
+          padding: '12px 14px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '10px',
+          boxShadow: '0 8px 25px rgba(239, 68, 68, 0.4)'
+        }}>
+          <BellRing style={{ width: '20px', height: '20px', color: '#f87171' }} />
+          <div style={{ flex: 1 }}>
+            <h5 style={{ fontSize: '0.8rem', color: '#fca5a5' }}>{notificationToast.title}</h5>
+            <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{notificationToast.message}</p>
+          </div>
+          <button onClick={() => setNotificationToast(null)} style={{ background: 'none', border: 'none', color: 'var(--text-dim)' }}>
+            <X style={{ width: '16px', height: '16px' }} />
           </button>
         </div>
       )}
 
-      {/* Main Content Area */}
-      <main style={{
-        flex: 1,
-        maxWidth: '1440px',
-        width: '100%',
-        margin: '0 auto',
-        padding: '28px 20px 48px'
-      }}>
+      {/* Mobile App Body */}
+      <div className="app-body">
         {activeTab === 'dashboard' && (
           <DashboardOverview 
             petData={petData} 
@@ -133,8 +150,6 @@ export default function App() {
             onNavigate={(tab) => setActiveTab(tab)} 
           />
         )}
-        {activeTab === 'services' && <Volume1CoreServices petData={petData} />}
-        {activeTab === 'ai' && <Volume2AIVision />}
         {activeTab === 'collar' && (
           <Volume3SmartCollar 
             collarState={collarState} 
@@ -142,92 +157,63 @@ export default function App() {
             onTriggerImpact={handleTriggerImpact} 
           />
         )}
+        {activeTab === 'ai' && <Volume2AIVision />}
+        {activeTab === 'services' && <Volume1CoreServices petData={petData} />}
         {activeTab === 'sos' && <Volume4HealthSOS petData={petData} onTriggerSOS={triggerSOS} />}
         {activeTab === 'analytics' && <Volume5ArchitectureDoc />}
-      </main>
+      </div>
 
-      {/* SOS Modal Dialog */}
+      {/* Bottom Navigation Bar */}
+      <div className="bottom-nav-bar">
+        {navItems.map(item => {
+          const Icon = item.icon;
+          const isActive = activeTab === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+            >
+              <Icon style={{ width: '20px', height: '20px' }} />
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* SOS Emergency Modal */}
       {showSOSModal && (
         <div style={{
-          position: 'fixed',
+          position: 'absolute',
           inset: 0,
-          zIndex: 1000,
-          background: 'rgba(0, 0, 0, 0.85)',
-          backdropFilter: 'blur(16px)',
+          zIndex: 100,
+          background: 'rgba(0, 0, 0, 0.88)',
+          backdropFilter: 'blur(12px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '16px'
+          padding: '20px'
         }}>
-          <div className="glass-panel" style={{
-            maxWidth: '500px',
-            width: '100%',
-            padding: '32px',
-            border: '2px solid rgba(239, 68, 68, 0.6)',
-            textAlign: 'center',
-            position: 'relative'
-          }}>
-            <button 
-              onClick={() => setShowSOSModal(false)}
-              style={{ position: 'absolute', top: '18px', right: '18px', background: 'none', border: 'none', color: 'var(--text-dim)', cursor: 'pointer' }}
-            >
-              <X style={{ width: '20px', height: '20px' }} />
-            </button>
-
-            <div style={{
-              width: '68px',
-              height: '68px',
-              borderRadius: '50%',
-              background: 'rgba(239, 68, 68, 0.2)',
-              border: '2px solid #ef4444',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 18px',
-              color: '#ef4444',
-              boxShadow: '0 0 35px rgba(239, 68, 68, 0.5)'
-            }}>
-              <ShieldAlert style={{ width: '36px', height: '36px' }} />
-            </div>
-
-            <h3 style={{ fontSize: '1.45rem', color: '#fca5a5', marginBottom: '8px' }}>
-              Confirm Emergency SOS Broadcast?
-            </h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '24px', lineHeight: '1.5' }}>
-              This will trigger a live emergency dispatch transmitting Bruno's GPS collar coordinates 
-              (10.02345 N, 76.34567 E) and Digital Health Passport to nearby emergency clinics.
+          <div className="app-card" style={{ border: '2px solid #ef4444', textAlign: 'center', width: '100%' }}>
+            <ShieldAlert style={{ width: '40px', height: '40px', color: '#ef4444', margin: '0 auto 10px' }} />
+            <h4 style={{ fontSize: '1.2rem', color: '#fca5a5', marginBottom: '6px' }}>Confirm Emergency SOS?</h4>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '16px' }}>
+              Broadcast Bruno's live GPS collar location to nearby emergency vet clinics.
             </p>
 
             {sosDispatched ? (
-              <div style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '14px', borderRadius: '12px', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                <CheckCircle style={{ width: '22px', height: '22px' }} />
-                SOS Emergency Broadcast Dispatched!
+              <div style={{ color: '#34d399', fontWeight: 600, fontSize: '0.85rem' }}>
+                ✓ SOS Dispatched Successfully!
               </div>
             ) : (
-              <div style={{ display: 'flex', gap: '14px', justifyContent: 'center' }}>
-                <button onClick={() => setShowSOSModal(false)} className="action-btn-secondary">
-                  Cancel
-                </button>
-                <button onClick={confirmSOSDispatch} className="action-btn-danger">
-                  Dispatch Emergency Alert
-                </button>
+              <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                <button onClick={() => setShowSOSModal(false)} className="btn-secondary">Cancel</button>
+                <button onClick={confirmSOSDispatch} className="btn-sos">Dispatch SOS</button>
               </div>
             )}
           </div>
         </div>
       )}
-
-      {/* Footer */}
-      <footer style={{
-        borderTop: '1px solid var(--border-glass)',
-        background: 'rgba(5, 8, 17, 0.9)',
-        padding: '20px 28px',
-        textAlign: 'center',
-        fontSize: '0.8rem',
-        color: 'var(--text-dim)'
-      }}>
-        PetConnect AI Platform • Next-Gen AI & ESP32 Smart Pet Collar Ecosystem
-      </footer>
     </div>
   );
 }
