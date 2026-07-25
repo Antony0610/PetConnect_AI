@@ -158,7 +158,7 @@ export default function Volume2AIVision() {
             MODULE B – Lost Pet AI Search Engine
           </h4>
           <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
-            Public uploads found pet photo -> AI Feature Extractor computes Cosine Similarity against all missing reports -> Ranks Top 10 matches & dispatches GPS notification.
+            Public uploads found pet photo &rarr; AI Feature Extractor computes Cosine Similarity against all missing reports &rarr; Ranks Top 10 matches &amp; dispatches GPS notification.
           </p>
 
           <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '10px' }}>
@@ -273,7 +273,7 @@ export default function Volume2AIVision() {
             MODULE F – Rescue Priority Engine
           </h4>
           <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '10px' }}>
-            Calculates 0 - 100 Priority Dispatch Scores based on Injury Severity, GPS Distance, Volunteer Availability & Weather.
+            Calculates 0 - 100 Priority Dispatch Scores based on Injury Severity, GPS Distance, Volunteer Availability &amp; Weather.
           </p>
 
           <div style={{ marginBottom: '10px' }}>
