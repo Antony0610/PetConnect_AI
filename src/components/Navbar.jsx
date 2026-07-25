@@ -1,7 +1,7 @@
 import React from 'react';
-import { Activity, Radio, Sparkles, MapPin, Heart, Stethoscope, Syringe, Pill, FileText, CheckSquare, Users, Flag, Camera, AlertCircle, Home, Shield, UserCheck, FileSearch, Cpu, Megaphone, Lock, ShieldCheck } from 'lucide-react';
+import { Activity, Radio, Sparkles, MapPin, Heart, Stethoscope, Syringe, Pill, FileText, CheckSquare, Users, Flag, Camera, AlertCircle, Home, Shield, UserCheck, FileSearch, Cpu, Megaphone, Lock, LogOut, ShieldCheck } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, activeRole, authSessions, onRequestRoleChange }) {
+export default function Navbar({ activeTab, setActiveTab, activeRole, currentSession, onSignOut }) {
   // Role-specific Navigation Tabs
   const roleTabsMap = {
     owner: [
@@ -34,8 +34,14 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, authSessio
     ]
   };
 
+  const roleNames = {
+    owner: "Pet Owner",
+    vet: "Veterinarian",
+    volunteer: "Rescue Volunteer",
+    admin: "Administrator"
+  };
+
   const currentTabs = roleTabsMap[activeRole] || roleTabsMap.owner;
-  const isCurrentRoleVerified = !!authSessions[activeRole];
 
   return (
     <header style={{
@@ -47,7 +53,7 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, authSessio
       borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
       padding: '10px 16px'
     }}>
-      {/* Top Header: Brand & Clean Role Verification Switcher */}
+      {/* Top Header: Brand & Locked Active Role Header */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -69,34 +75,33 @@ export default function Navbar({ activeTab, setActiveTab, activeRole, authSessio
           </div>
           <div>
             <h1 style={{ fontSize: '1rem', fontWeight: 800, color: 'white', lineHeight: '1' }}>PetConnect AI</h1>
-            <span style={{ fontSize: '0.62rem', color: isCurrentRoleVerified ? '#34d399' : '#fbbf24', display: 'flex', alignItems: 'center', gap: '3px' }}>
-              {isCurrentRoleVerified ? <ShieldCheck style={{ width: '10px', height: '10px' }} /> : <Lock style={{ width: '10px', height: '10px' }} />}
-              {isCurrentRoleVerified ? 'Verified Credentials' : 'Auth Required'}
+            <span style={{ fontSize: '0.62rem', color: '#34d399', display: 'flex', alignItems: 'center', gap: '3px' }}>
+              <ShieldCheck style={{ width: '10px', height: '10px' }} /> Locked Session: {roleNames[activeRole]}
             </span>
           </div>
         </div>
 
-        {/* Clean Role Selector Dropdown (Triggers Verification Challenge) */}
-        <select
-          value={activeRole}
-          onChange={(e) => onRequestRoleChange(e.target.value)}
+        {/* Lock & Switch Role (Sign Out Button) */}
+        <button 
+          onClick={onSignOut}
           style={{
-            background: isCurrentRoleVerified ? 'rgba(16, 185, 129, 0.2)' : 'rgba(99, 102, 241, 0.25)',
-            color: isCurrentRoleVerified ? '#34d399' : '#a5b4fc',
-            border: isCurrentRoleVerified ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(99, 102, 241, 0.4)',
+            background: 'rgba(239, 68, 68, 0.15)',
+            color: '#f87171',
+            border: '1px solid rgba(239, 68, 68, 0.35)',
             borderRadius: '8px',
-            padding: '4px 8px',
-            fontSize: '0.75rem',
+            padding: '5px 10px',
+            fontSize: '0.72rem',
             fontWeight: 700,
-            outline: 'none',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px'
           }}
+          title="Locks current session and allows selecting a different role"
         >
-          <option value="owner">Pet Owner {authSessions.owner ? '✓' : '🔒'}</option>
-          <option value="vet">Veterinarian {authSessions.vet ? '✓' : '🔒'}</option>
-          <option value="volunteer">Rescue Volunteer {authSessions.volunteer ? '✓' : '🔒'}</option>
-          <option value="admin">Administrator {authSessions.admin ? '✓' : '🔒'}</option>
-        </select>
+          <LogOut style={{ width: '12px', height: '12px' }} />
+          Lock & Switch Role
+        </button>
       </div>
 
       {/* Role-Specific Nav Tabs */}

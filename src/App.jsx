@@ -12,21 +12,17 @@ import RoleLoginModal from './components/RoleLoginModal';
 import { ShieldAlert, X, BellRing, Wifi, Battery, Lock, ShieldCheck } from 'lucide-react';
 
 export default function App() {
-  const [activeRole, setActiveRole] = useState('owner');
+  // Current Locked Single-Role Session State (default null -> prompts sign in)
+  const [currentSession, setCurrentSession] = useState({
+    role: 'owner',
+    badgeId: 'owner@petconnect.ai',
+    verifiedAt: '09:41 AM'
+  });
+
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [pendingRole, setPendingRole] = useState(null);
-  const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSOSModal, setShowSOSModal] = useState(false);
   const [sosDispatched, setSosDispatched] = useState(false);
   const [notificationToast, setNotificationToast] = useState(null);
-
-  // Auth Sessions per role
-  const [authSessions, setAuthSessions] = useState({
-    owner: { badgeId: "owner@petconnect.ai", verifiedAt: "09:41 AM" },
-    vet: null,
-    volunteer: null,
-    admin: null
-  });
 
   const roleFirstTabs = {
     owner: 'dashboard',
@@ -60,31 +56,26 @@ export default function App() {
     lastUpdated: new Date().toLocaleTimeString()
   });
 
-  const handleRoleChangeRequest = (roleKey) => {
-    if (authSessions[roleKey]) {
-      // Role already authenticated -> Switch directly
-      setActiveRole(roleKey);
-      setActiveTab(roleFirstTabs[roleKey]);
-    } else {
-      // Role requires login verification challenge
-      setPendingRole(roleKey);
-      setShowLoginModal(true);
-    }
+  const handleAuthenticateRoleSuccess = (roleKey, sessionData) => {
+    setCurrentSession({
+      role: roleKey,
+      badgeId: sessionData.badgeId,
+      verifiedAt: sessionData.verifiedAt
+    });
+    setActiveTab(roleFirstTabs[roleKey]);
+
+    const roleNames = { owner: "Pet Owner", vet: "Veterinarian", volunteer: "Rescue Volunteer", admin: "Administrator" };
+    setNotificationToast({
+      title: "🔒 SESSION LOCKED & SIGNED IN",
+      message: `Signed in as ${roleNames[roleKey]} (${sessionData.badgeId})`
+    });
   };
 
-  const handleAuthenticateSuccess = (roleKey, sessionData) => {
-    setAuthSessions(prev => ({
-      ...prev,
-      [roleKey]: sessionData
-    }));
-    setActiveRole(roleKey);
-    setActiveTab(roleFirstTabs[roleKey]);
-    setShowLoginModal(false);
-    setPendingRole(null);
-
+  const handleSignOutAndLock = () => {
+    setCurrentSession(null);
     setNotificationToast({
-      title: "🔐 IDENTITY VERIFIED",
-      message: `Successfully authenticated as ${roleKey.toUpperCase()} (${sessionData.badgeId})`
+      title: "🔒 SESSION LOCKED",
+      message: "Signed out. Select a role to authenticate."
     });
   };
 
@@ -117,6 +108,8 @@ export default function App() {
     });
   };
 
+  const activeRole = currentSession ? currentSession.role : 'owner';
+
   return (
     <div className="mobile-app-shell">
       {/* Mobile Top Status Bar */}
@@ -128,14 +121,16 @@ export default function App() {
         </div>
       </div>
 
-      {/* Header with Authenticated Role Control */}
-      <Navbar 
-        activeTab={activeTab} 
-        setActiveTab={setActiveTab}
-        activeRole={activeRole}
-        authSessions={authSessions}
-        onRequestRoleChange={handleRoleChangeRequest}
-      />
+      {/* Header Bar */}
+      {currentSession && (
+        <Navbar 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab}
+          activeRole={activeRole}
+          currentSession={currentSession}
+          onSignOut={handleSignOutAndLock}
+        />
+      )}
 
       {/* Real-Time Notification Toast */}
       {notificationToast && (
@@ -165,41 +160,49 @@ export default function App() {
         </div>
       )}
 
-      {/* Strictly Scoped Role Content Body */}
+      {/* Strictly Scoped Active Role Content Body */}
       <div className="app-body">
-        {/* 🐶 ROLE 1: PET OWNER MODULES */}
-        {activeRole === 'owner' && (
+        {currentSession ? (
           <>
-            {activeTab === 'dashboard' && <DashboardOverview petData={petData} collarState={collarState} onNavigate={(tab) => setActiveTab(tab)} />}
-            {activeTab === 'collar' && <Volume3SmartCollar collarState={collarState} setCollarState={setCollarState} onTriggerImpact={handleTriggerImpact} />}
-            {activeTab === 'ai' && <Volume2AIVision />}
-            {activeTab === 'services' && <Volume1CoreServices petData={petData} />}
-            {activeTab === 'sos' && <Volume4HealthSOS petData={petData} onTriggerSOS={triggerSOS} />}
+            {/* 🐶 ROLE 1: PET OWNER MODULES */}
+            {activeRole === 'owner' && (
+              <>
+                {activeTab === 'dashboard' && <DashboardOverview petData={petData} collarState={collarState} onNavigate={(tab) => setActiveTab(tab)} />}
+                {activeTab === 'collar' && <Volume3SmartCollar collarState={collarState} setCollarState={setCollarState} onTriggerImpact={handleTriggerImpact} />}
+                {activeTab === 'ai' && <Volume2AIVision />}
+                {activeTab === 'services' && <Volume1CoreServices petData={petData} />}
+                {activeTab === 'sos' && <Volume4HealthSOS petData={petData} onTriggerSOS={triggerSOS} />}
+              </>
+            )}
+
+            {/* 🩺 ROLE 2: VETERINARIAN MODULES */}
+            {activeRole === 'vet' && (
+              <RoleVeterinarian petData={petData} activeSubTab={activeTab} />
+            )}
+
+            {/* 🦺 ROLE 3: RESCUE VOLUNTEER MODULES */}
+            {activeRole === 'volunteer' && (
+              <RoleRescueVolunteer activeSubTab={activeTab} />
+            )}
+
+            {/* 🛡️ ROLE 4: ADMINISTRATOR MODULES */}
+            {activeRole === 'admin' && (
+              <RoleAdministrator activeSubTab={activeTab} />
+            )}
           </>
-        )}
-
-        {/* 🩺 ROLE 2: VETERINARIAN MODULES */}
-        {activeRole === 'vet' && (
-          <RoleVeterinarian petData={petData} activeSubTab={activeTab} />
-        )}
-
-        {/* 🦺 ROLE 3: RESCUE VOLUNTEER MODULES */}
-        {activeRole === 'volunteer' && (
-          <RoleRescueVolunteer activeSubTab={activeTab} />
-        )}
-
-        {/* 🛡️ ROLE 4: ADMINISTRATOR MODULES */}
-        {activeRole === 'admin' && (
-          <RoleAdministrator activeSubTab={activeTab} />
+        ) : (
+          <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
+            <Lock style={{ width: '36px', height: '36px', color: '#6366f1', margin: '0 auto 10px' }} />
+            <h4 style={{ color: 'white', marginBottom: '4px' }}>Session Locked</h4>
+            <p style={{ fontSize: '0.8rem' }}>Please authenticate a role to unlock modules.</p>
+          </div>
         )}
       </div>
 
-      {/* Role Verification & Login Challenge Modal */}
-      {showLoginModal && pendingRole && (
+      {/* Role Sign In / Verification Modal (Prompts when logged out) */}
+      {!currentSession && (
         <RoleLoginModal 
-          targetRole={pendingRole}
-          onAuthenticate={handleAuthenticateSuccess}
-          onClose={() => setShowLoginModal(false)}
+          onAuthenticate={handleAuthenticateRoleSuccess}
         />
       )}
 
