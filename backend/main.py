@@ -5,21 +5,40 @@ from typing import List, Optional, Dict
 import json
 import asyncio
 import math
+import sys
+import os
 
-from backend.database import engine, get_db, Base
-from backend.models import Pet, User, GpsTelemetry, Alert, StrayReport
+# Robust relative/absolute imports for Vercel Serverless runtime & local execution
+try:
+    from backend.database import engine, get_db, Base
+    from backend.models import Pet, User, GpsTelemetry, Alert, StrayReport
+except ImportError:
+    from database import engine, get_db, Base
+    from models import Pet, User, GpsTelemetry, Alert, StrayReport
 
 # Import 6 AI Modules A-F
-from ai_engine.ai_pet_identity import AIPetIdentityEngine
-from ai_engine.siamese_pet_matcher import SiamesePetMatcher
-from ai_engine.rag_llm_assistant import RAGPetAssistant
-from ai_engine.activity_classifier import ActivityClassifier
-from ai_engine.adoption_recommender import AIAdoptionRecommender
-from ai_engine.rescue_priority_engine import RescuePriorityEngine
+try:
+    from ai_engine.ai_pet_identity import AIPetIdentityEngine
+    from ai_engine.siamese_pet_matcher import SiamesePetMatcher
+    from ai_engine.rag_llm_assistant import RAGPetAssistant
+    from ai_engine.activity_classifier import ActivityClassifier
+    from ai_engine.adoption_recommender import AIAdoptionRecommender
+    from ai_engine.rescue_priority_engine import RescuePriorityEngine
+except ImportError:
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+    from ai_engine.ai_pet_identity import AIPetIdentityEngine
+    from ai_engine.siamese_pet_matcher import SiamesePetMatcher
+    from ai_engine.rag_llm_assistant import RAGPetAssistant
+    from ai_engine.activity_classifier import ActivityClassifier
+    from ai_engine.adoption_recommender import AIAdoptionRecommender
+    from ai_engine.rescue_priority_engine import RescuePriorityEngine
 
-# Initialize Database Tables
+# Initialize Database Tables if engine present
 if engine:
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        print(f"DB Init note: {e}")
 
 app = FastAPI(
     title="PetConnect AI Backend REST & WebSocket API",
@@ -35,80 +54,95 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Instantiate AI Engines A-F
-biometric_identity_engine = AIPetIdentityEngine()
-lost_pet_matcher = SiamesePetMatcher()
+# Instantiate 6 AI Engines
+identity_engine = AIPetIdentityEngine()
+matcher_engine = SiamesePetMatcher()
 rag_assistant = RAGPetAssistant()
-activity_intelligence = ActivityClassifier()
+activity_classifier = ActivityClassifier()
 adoption_recommender = AIAdoptionRecommender()
 rescue_priority_engine = RescuePriorityEngine()
 
-# Pydantic Query Models
-class BiometricRegQuery(BaseModel):
-    pet_name: str
-    front_face: Optional[str] = "bruno_face.jpg"
-    left_face: Optional[str] = "bruno_left.jpg"
-    right_face: Optional[str] = "bruno_right.jpg"
-    nose_print: Optional[str] = "bruno_nose.jpg"
-    full_body: Optional[str] = "bruno_body.jpg"
-
-class RAGQuery(BaseModel):
-    user_query: str
-    pet_id: Optional[str] = "bruno"
-
-class AdoptionQuery(BaseModel):
-    house_size: Optional[str] = "Apartment"
-    work_hours: Optional[int] = 8
-    has_children: Optional[bool] = True
-
-class RescuePriorityQuery(BaseModel):
-    animal_condition: str
-    distance_km: Optional[float] = 1.5
-
 @app.get("/")
-def root():
+def read_root():
     return {
         "status": "online",
-        "system": "PetConnect AI 6-Module AI Subsystem",
-        "modules_active": ["Module A Identity", "Module B Lost Pet", "Module C RAG Assistant", "Module D Activity", "Module E Adoption", "Module F Rescue Priority"]
+        "system": "PetConnect AI 5-Volume Ecosystem Backend",
+        "modules": ["Module A: Identity", "Module B: Lost Matcher", "Module C: RAG Assistant", "Module D: Activity ML", "Module E: Adoption ML", "Module F: Rescue Priority"]
     }
 
-# MODULE A: AI Pet Identity (Multi-Biometric Fusion)
-@app.post("/api/v1/ai/module-a/biometric-identity")
-def create_biometric_identity(data: BiometricRegQuery):
-    profile = biometric_identity_engine.generate_fused_identity_profile(data.model_dump())
-    return profile
+@app.get("/api/health")
+def health_check():
+    return {"status": "healthy", "service": "backend"}
 
-# MODULE B: Lost Pet AI Search
-@app.post("/api/v1/ai/module-b/lost-pet-search")
-def search_lost_pet(found_image_url: str = "finder_photo.jpg"):
-    sample_db = [
-        {"id": 1, "name": "Bruno", "photo_url": "collar_hero.jpg"},
-        {"id": 2, "name": "Max", "photo_url": "ai_matcher.jpg"}
-    ]
-    matches = lost_pet_matcher.match_found_pet(found_image_url, sample_db)
-    return {"status": "success", "ranked_matches": matches}
+# Module A Endpoint
+class BiometricUpload(BaseModel):
+    face_image_b64: Optional[str] = None
+    nose_print_b64: Optional[str] = None
+    coat_pattern_b64: Optional[str] = None
+    body_shape_b64: Optional[str] = None
 
-# MODULE C: PetConnect AI Assistant (RAG Gemma 3 / Phi-3 Mini)
-@app.post("/api/v1/ai/module-c/rag-assistant")
-def query_rag_assistant(data: RAGQuery):
-    response = rag_assistant.generate_response(data.user_query, data.pet_id)
-    return response
+@app.post("/api/v1/ai/biometric-identity")
+def generate_biometric_identity(data: BiometricUpload):
+    res = identity_engine.register_pet_biometrics(
+        face_img=data.face_image_b64,
+        nose_img=data.nose_print_b64,
+        coat_img=data.coat_pattern_b64,
+        body_img=data.body_shape_b64
+    )
+    return res
 
-# MODULE D: Activity Intelligence
-@app.post("/api/v1/ai/module-d/activity-intelligence")
-def classify_activity(accel_x: float, accel_y: float, accel_z: float):
-    activity = activity_intelligence.classify_motion(accel_x, accel_y, accel_z)
-    return {"classified_activity": activity}
+# Module B Endpoint
+class MatchQuery(BaseModel):
+    missing_pet_id: str
+    sighting_image_b64: str
 
-# MODULE E: AI Adoption Recommendation
-@app.post("/api/v1/ai/module-e/adoption-recommendation")
-def recommend_adoption(data: AdoptionQuery):
-    recommendations = adoption_recommender.recommend_breeds(data.model_dump())
-    return recommendations
+@app.post("/api/v1/ai/lost-pet-match")
+def match_lost_pet(data: MatchQuery):
+    results = matcher_engine.match_sighting_to_lost_database(data.sighting_image_b64)
+    return {"matches": results}
 
-# MODULE F: Rescue Priority Engine
-@app.post("/api/v1/ai/module-f/rescue-priority")
-def calculate_rescue_priority(data: RescuePriorityQuery):
-    priority = rescue_priority_engine.calculate_priority_score(data.model_dump())
-    return priority
+# Module C Endpoint
+class AssistantQuery(BaseModel):
+    user_id: str
+    pet_id: str
+    prompt: str
+
+@app.post("/api/v1/ai/chat")
+def chat_with_assistant(query: AssistantQuery):
+    resp = rag_assistant.query_assistant(query.user_id, query.pet_id, query.prompt)
+    return {"response": resp}
+
+# Module D Endpoint
+class ActivityData(BaseModel):
+    accel_x: float
+    accel_y: float
+    accel_z: float
+
+@app.post("/api/v1/ai/activity-classify")
+def classify_activity(data: ActivityData):
+    res = activity_classifier.predict_behavior(data.accel_x, data.accel_y, data.accel_z)
+    return res
+
+# Module E Endpoint
+class AdoptionPreferences(BaseModel):
+    house_size: str
+    work_hours: str
+    has_children: bool
+    pet_experience: str
+    budget_range: str
+
+@app.post("/api/v1/ai/adoption-score")
+def score_adoption_matches(prefs: AdoptionPreferences):
+    res = adoption_recommender.recommend_breeds(prefs.dict())
+    return {"recommendations": res}
+
+# Module F Endpoint
+class StrayReportData(BaseModel):
+    location: str
+    condition_description: str
+    is_injured: bool
+
+@app.post("/api/v1/ai/rescue-priority")
+def calculate_rescue_priority(report: StrayReportData):
+    res = rescue_priority_engine.calculate_priority(report.condition_description, report.is_injured)
+    return res
