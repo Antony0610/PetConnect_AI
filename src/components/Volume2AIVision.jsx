@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Sparkles, Camera, Search, Bot, Activity, HeartHandshake, ShieldAlert, Fingerprint, Upload, CheckCircle2, RefreshCw, FileText, ArrowRight, Layers } from 'lucide-react';
+import { Sparkles, Camera, Search, Bot, Activity, HeartHandshake, ShieldAlert, Fingerprint, Upload, CheckCircle2, RefreshCw, FileText, ArrowRight, Layers, Home, Clock, Users, DollarSign, Award } from 'lucide-react';
 
 export default function Volume2AIVision() {
   const [activeTab, setActiveTab] = useState('identity');
 
-  // 1. Multi-Biometric Scanner States
-  const [faceImage, setFaceImage] = useState('/collar_hero.jpg');
+  // 1. Multi-Biometric Scanner States with 4 Interactive Drop Boxes
+  const [frontFaceImage, setFrontFaceImage] = useState('/collar_hero.jpg');
+  const [profileFaceImage, setProfileFaceImage] = useState('/ai_matcher.jpg');
   const [noseImage, setNoseImage] = useState('/ai_matcher.jpg');
   const [bodyImage, setBodyImage] = useState('/collar_hero.jpg');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -20,13 +21,13 @@ export default function Volume2AIVision() {
     statusText: 'Verified Unique Biometric Identity Profile (95%+ Match)'
   });
 
-  // 2. Lost Pet Matcher Dual Drop Box Image States
+  // 2. Lost Pet Matcher Dual Drop Box States
   const [missingPetImage, setMissingPetImage] = useState('/collar_hero.jpg');
   const [sightedPetImage, setSightedPetImage] = useState('/ai_matcher.jpg');
   const [isMatching, setIsMatching] = useState(false);
   const [lostPetSimilarity, setLostPetSimilarity] = useState(94.2);
 
-  // 3. Integrated RAG AI Assistant (With GPS + Activity MPU6050 + Vaccinations + Prescriptions Context)
+  // 3. Integrated RAG AI Assistant
   const [ragQuery, setRagQuery] = useState('');
   const [chatLog, setChatLog] = useState([
     { sender: 'ai', text: 'Hello! I am your PetConnect AI Assistant. I have live context access to Bruno\'s GPS telemetry, MPU6050 activity metrics, vaccinations, and prescriptions. How can I help you today?' },
@@ -34,11 +35,18 @@ export default function Volume2AIVision() {
     { sender: 'ai', text: 'Bruno is currently 420 meters from home and is active (Walking). Collar battery level is 88%. Today he has logged 42 mins walking, 12 mins running, and 9.5 hours resting.', contextUsed: 'Live ESP32 GPS + MPU6050 Activity Vector Context' }
   ]);
 
-  // 4. Adoption Scorer State
-  const [adoptionResults] = useState([
-    { breed: 'Golden Retriever', score: 92, reason: 'Gentle temperament & high family compatibility' },
-    { breed: 'Beagle', score: 89, reason: 'Compact size suitable for apartments' },
-    { breed: 'Labrador Retriever', score: 88, reason: 'Highly energetic & easy to train' }
+  // 4. Interactive Adoption Recommendation Engine States
+  const [houseSize, setHouseSize] = useState('Apartment');
+  const [workHours, setWorkHours] = useState('4-8 hrs');
+  const [hasChildren, setHasChildren] = useState(true);
+  const [experience, setExperience] = useState('Intermediate');
+  const [budget, setBudget] = useState('$150 - $300');
+
+  const [adoptionResults, setAdoptionResults] = useState([
+    { breed: 'Golden Retriever', score: 92, reason: 'Gentle temperament & excellent with children' },
+    { breed: 'Beagle', score: 89, reason: 'Compact size ideal for apartments & moderate work hours' },
+    { breed: 'Labrador Retriever', score: 88, reason: 'Highly trainable companion & friendly nature' },
+    { breed: 'French Bulldog', score: 85, reason: 'Low exercise requirement & quiet for apartment living' }
   ]);
 
   const handleRunBiometricAnalysis = () => {
@@ -54,33 +62,36 @@ export default function Volume2AIVision() {
         coatScore: (90 + Math.random() * 5).toFixed(1),
         bodyScore: (91 + Math.random() * 4).toFixed(1),
         overallMatch: 97.4,
-        statusText: 'Biometric Identity Verified (High Confidence)'
+        statusText: 'Biometric Identity Profile Created & Verified (95%+ Match)'
       });
     }, 1000);
   };
 
-  const handleMissingImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setMissingPetImage(URL.createObjectURL(file));
-      runLostPetComparison();
-    }
-  };
+  const handleCalculateAdoptionMatch = () => {
+    let scores = [
+      { breed: 'Golden Retriever', score: 92, reason: 'Gentle temperament & excellent with children' },
+      { breed: 'Beagle', score: 89, reason: 'Compact size ideal for apartments & moderate work hours' },
+      { breed: 'Labrador Retriever', score: 88, reason: 'Highly trainable companion & friendly nature' },
+      { breed: 'French Bulldog', score: 85, reason: 'Low exercise requirement & quiet for apartment living' },
+      { breed: 'German Shepherd', score: 82, reason: 'High intelligence & protective family dog' }
+    ];
 
-  const handleSightedImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSightedPetImage(URL.createObjectURL(file));
-      runLostPetComparison();
+    if (houseSize === 'Apartment') {
+      scores[1].score += 5; // Beagle
+      scores[3].score += 8; // Frenchie
+      scores[0].score -= 4; // Golden
+    } else if (houseSize === 'Large Yard') {
+      scores[0].score += 6; // Golden
+      scores[2].score += 5; // Lab
+      scores[4].score += 7; // German Shepherd
     }
-  };
 
-  const runLostPetComparison = () => {
-    setIsMatching(true);
-    setTimeout(() => {
-      setIsMatching(false);
-      setLostPetSimilarity(+(91.0 + Math.random() * 7).toFixed(1));
-    }, 800);
+    if (!hasChildren) {
+      scores[4].score += 4;
+    }
+
+    scores.sort((a, b) => b.score - a.score);
+    setAdoptionResults(scores.slice(0, 4));
   };
 
   const handleSendRAGQuery = (e) => {
@@ -116,7 +127,7 @@ export default function Volume2AIVision() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-      {/* Sleek Feature Tabs (Cleaned: No Module Labels, Rescue Priority Moved to Rescue View) */}
+      {/* Sleek Feature Tabs */}
       <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', paddingBottom: '2px' }}>
         {[
           { id: 'identity', label: 'Biometric Pet ID' },
@@ -134,7 +145,7 @@ export default function Volume2AIVision() {
               border: activeTab === tab.id ? '1px solid rgba(99, 102, 241, 0.5)' : '1px solid var(--border-glass)',
               padding: '6px 8px',
               borderRadius: '8px',
-              fontSize: '0.72rem',
+              fontSize: '0.68rem',
               fontWeight: 700,
               cursor: 'pointer',
               whiteSpace: 'nowrap'
@@ -145,36 +156,51 @@ export default function Volume2AIVision() {
         ))}
       </div>
 
-      {/* 1. Biometric Pet ID Scanner */}
+      {/* 1. Biometric Pet ID Scanner with 4 Interactive Drop Boxes */}
       {activeTab === 'identity' && (
         <div className="app-card" style={{ padding: '16px' }}>
-          <h4 style={{ fontSize: '0.95rem', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Fingerprint style={{ color: '#818cf8', width: '18px', height: '18px' }} />
-            Multi-Biometric Pet ID Scanner
+            Multi-Biometric Identity Drop Boxes
           </h4>
+          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
+            Drop or upload photos into all 4 biometric feature zones to generate a fused 1920-dimensional identity embedding.
+          </p>
 
-          {/* Interactive Photo Upload Slots */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '12px' }}>
-            <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px dashed rgba(255,255,255,0.15)', borderRadius: '10px', padding: '8px', textAlign: 'center' }}>
-              <img src={faceImage} alt="Face" style={{ width: '100%', height: '65px', objectFit: 'cover', borderRadius: '6px', marginBottom: '4px' }} />
-              <label style={{ display: 'block', fontSize: '0.62rem', color: '#a5b4fc', cursor: 'pointer', fontWeight: 600 }}>
-                📷 Front Face
-                <input type="file" accept="image/*" onChange={(e) => setFaceImage(URL.createObjectURL(e.target.files[0]))} style={{ display: 'none' }} />
+          {/* 4 Photo Drop Boxes Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
+            {/* Drop Box 1: Front Face */}
+            <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(99, 102, 241, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
+              <img src={frontFaceImage} alt="Front Face" style={{ width: '100%', height: '70px', objectFit: 'cover', borderRadius: '8px', marginBottom: '4px' }} />
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(99, 102, 241, 0.2)', color: '#a5b4fc', padding: '3px 6px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
+                <Upload style={{ width: '11px', height: '11px' }} /> Drop Front Face (512d)
+                <input type="file" accept="image/*" onChange={(e) => setFrontFaceImage(URL.createObjectURL(e.target.files[0]))} style={{ display: 'none' }} />
               </label>
             </div>
 
-            <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px dashed rgba(255,255,255,0.15)', borderRadius: '10px', padding: '8px', textAlign: 'center' }}>
-              <img src={noseImage} alt="Nose" style={{ width: '100%', height: '65px', objectFit: 'cover', borderRadius: '6px', marginBottom: '4px' }} />
-              <label style={{ display: 'block', fontSize: '0.62rem', color: '#34d399', cursor: 'pointer', fontWeight: 600 }}>
-                👃 Nose Print
+            {/* Drop Box 2: Profile Face */}
+            <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(139, 92, 246, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
+              <img src={profileFaceImage} alt="Profile Face" style={{ width: '100%', height: '70px', objectFit: 'cover', borderRadius: '8px', marginBottom: '4px' }} />
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(139, 92, 246, 0.2)', color: '#c084fc', padding: '3px 6px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
+                <Upload style={{ width: '11px', height: '11px' }} /> Drop Side Profile (512d)
+                <input type="file" accept="image/*" onChange={(e) => setProfileFaceImage(URL.createObjectURL(e.target.files[0]))} style={{ display: 'none' }} />
+              </label>
+            </div>
+
+            {/* Drop Box 3: Nose Print */}
+            <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(16, 185, 129, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
+              <img src={noseImage} alt="Nose Print" style={{ width: '100%', height: '70px', objectFit: 'cover', borderRadius: '8px', marginBottom: '4px' }} />
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '3px 6px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
+                <Upload style={{ width: '11px', height: '11px' }} /> Drop Nose Print (1024d)
                 <input type="file" accept="image/*" onChange={(e) => setNoseImage(URL.createObjectURL(e.target.files[0]))} style={{ display: 'none' }} />
               </label>
             </div>
 
-            <div style={{ background: 'rgba(0,0,0,0.3)', border: '1px dashed rgba(255,255,255,0.15)', borderRadius: '10px', padding: '8px', textAlign: 'center' }}>
-              <img src={bodyImage} alt="Body" style={{ width: '100%', height: '65px', objectFit: 'cover', borderRadius: '6px', marginBottom: '4px' }} />
-              <label style={{ display: 'block', fontSize: '0.62rem', color: '#38bdf8', cursor: 'pointer', fontWeight: 600 }}>
-                🐕 Full Body
+            {/* Drop Box 4: Full Body Coat Pattern */}
+            <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(6, 182, 212, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
+              <img src={bodyImage} alt="Full Body Coat" style={{ width: '100%', height: '70px', objectFit: 'cover', borderRadius: '8px', marginBottom: '4px' }} />
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(6, 182, 212, 0.2)', color: '#38bdf8', padding: '3px 6px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
+                <Upload style={{ width: '11px', height: '11px' }} /> Drop Full Body (384d)
                 <input type="file" accept="image/*" onChange={(e) => setBodyImage(URL.createObjectURL(e.target.files[0]))} style={{ display: 'none' }} />
               </label>
             </div>
@@ -186,26 +212,26 @@ export default function Volume2AIVision() {
             className="btn-primary" 
             style={{ width: '100%', justifyContent: 'center', fontSize: '0.78rem', padding: '8px', marginBottom: '12px' }}
           >
-            {isAnalyzing ? "Extracting Embeddings..." : "Analyze & Generate Biometric Identity"}
+            {isAnalyzing ? "Fusing 1920d Embeddings..." : "Analyze & Fuse Biometric Identity"}
           </button>
 
           {analysisComplete && (
             <div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '10px' }}>
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '6px 8px', borderRadius: '6px', border: '1px solid var(--border-glass)' }}>
-                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>FACE (512d)</span>
+                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>FACE MATCH (ArcFace)</span>
                   <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#38bdf8' }}>{biometricScores.faceScore}%</p>
                 </div>
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '6px 8px', borderRadius: '6px', border: '1px solid var(--border-glass)' }}>
-                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>NOSE PRINT (1024d)</span>
+                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>NOSE PRINT (ViT)</span>
                   <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#34d399' }}>{biometricScores.noseScore}%</p>
                 </div>
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '6px 8px', borderRadius: '6px', border: '1px solid var(--border-glass)' }}>
-                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>COAT PATTERN (256d)</span>
+                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>COAT PATTERN (B3)</span>
                   <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#a5b4fc' }}>{biometricScores.coatScore}%</p>
                 </div>
                 <div style={{ background: 'rgba(0,0,0,0.3)', padding: '6px 8px', borderRadius: '6px', border: '1px solid var(--border-glass)' }}>
-                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>BODY SHAPE (128d)</span>
+                  <span style={{ fontSize: '0.62rem', color: 'var(--text-dim)' }}>BODY SHAPE (YOLOv8)</span>
                   <p style={{ fontSize: '0.9rem', fontWeight: 700, color: '#c084fc' }}>{biometricScores.bodyScore}%</p>
                 </div>
               </div>
@@ -219,7 +245,7 @@ export default function Volume2AIVision() {
         </div>
       )}
 
-      {/* 2. Lost Pet Matcher with DUAL IMAGE DROP BOXES */}
+      {/* 2. Lost Pet Matcher with Dual Drop Boxes */}
       {activeTab === 'matcher' && (
         <div className="app-card" style={{ padding: '16px' }}>
           <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -227,43 +253,36 @@ export default function Volume2AIVision() {
             Lost Pet Siamese Neural Matcher
           </h4>
           <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
-            Drop or upload photos in both boxes to verify similarity between the missing pet report and a public sighting.
+            Drop or upload photos into both boxes to verify similarity between missing report and public sighting.
           </p>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
-            {/* Drop Box 1: Registered Missing Pet Photo */}
             <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(99, 102, 241, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
-              <img src={missingPetImage} alt="Registered Missing Pet" style={{ width: '100%', height: '90px', objectFit: 'cover', borderRadius: '8px', marginBottom: '6px' }} />
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(99, 102, 241, 0.2)', color: '#a5b4fc', padding: '4px 8px', borderRadius: '6px', fontSize: '0.68rem', fontWeight: 700, cursor: 'pointer' }}>
-                <Upload style={{ width: '12px', height: '12px' }} /> Drop/Upload Missing Pet
-                <input type="file" accept="image/*" onChange={handleMissingImageUpload} style={{ display: 'none' }} />
+              <img src={missingPetImage} alt="Missing Pet" style={{ width: '100%', height: '85px', objectFit: 'cover', borderRadius: '8px', marginBottom: '6px' }} />
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(99, 102, 241, 0.2)', color: '#a5b4fc', padding: '4px 8px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
+                <Upload style={{ width: '11px', height: '11px' }} /> Drop Missing Pet Photo
+                <input type="file" accept="image/*" onChange={(e) => setMissingPetImage(URL.createObjectURL(e.target.files[0]))} style={{ display: 'none' }} />
               </label>
             </div>
 
-            {/* Drop Box 2: Public Sighted Pet Photo */}
             <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(236, 72, 153, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
-              <img src={sightedPetImage} alt="Public Sighted Pet" style={{ width: '100%', height: '90px', objectFit: 'cover', borderRadius: '8px', marginBottom: '6px' }} />
-              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(236, 72, 153, 0.2)', color: '#f472b6', padding: '4px 8px', borderRadius: '6px', fontSize: '0.68rem', fontWeight: 700, cursor: 'pointer' }}>
-                <Upload style={{ width: '12px', height: '12px' }} /> Drop/Upload Sighting Photo
-                <input type="file" accept="image/*" onChange={handleSightedImageUpload} style={{ display: 'none' }} />
+              <img src={sightedPetImage} alt="Sighted Pet" style={{ width: '100%', height: '85px', objectFit: 'cover', borderRadius: '8px', marginBottom: '6px' }} />
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(236, 72, 153, 0.2)', color: '#f472b6', padding: '4px 8px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
+                <Upload style={{ width: '11px', height: '11px' }} /> Drop Sighting Photo
+                <input type="file" accept="image/*" onChange={(e) => setSightedPetImage(URL.createObjectURL(e.target.files[0]))} style={{ display: 'none' }} />
               </label>
             </div>
           </div>
 
-          {/* Neural Match Output Bar */}
           <div style={{ background: 'rgba(16, 185, 129, 0.15)', padding: '10px', borderRadius: '10px', border: '1px solid rgba(16, 185, 129, 0.3)', textAlign: 'center' }}>
             <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>SIAMESE COSINE SIMILARITY SCORE</span>
-            <h4 style={{ fontSize: '1.4rem', color: '#34d399', margin: '2px 0' }}>
-              {isMatching ? "Computing Feature Match..." : `${lostPetSimilarity}% Match`}
-            </h4>
-            <p style={{ fontSize: '0.72rem', color: '#34d399', fontWeight: 600 }}>
-              ✓ High Probability Match — Owner Notified via Emergency Alert
-            </p>
+            <h4 style={{ fontSize: '1.4rem', color: '#34d399', margin: '2px 0' }}>{lostPetSimilarity}% Match</h4>
+            <p style={{ fontSize: '0.72rem', color: '#34d399', fontWeight: 600 }}>✓ High Probability Match — Owner Notified via Emergency Alert</p>
           </div>
         </div>
       )}
 
-      {/* 3. Integrated RAG AI Health Assistant Chatbot (Querying GPS + MPU6050 Activity + Medical Context) */}
+      {/* 3. RAG AI Assistant */}
       {activeTab === 'assistant' && (
         <div className="app-card" style={{ padding: '16px' }}>
           <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -308,16 +327,62 @@ export default function Volume2AIVision() {
         </div>
       )}
 
-      {/* 4. Adoption Scorer */}
+      {/* 4. Interactive Adoption Scorer */}
       {activeTab === 'adoption' && (
         <div className="app-card" style={{ padding: '16px' }}>
-          <h4 style={{ fontSize: '0.95rem', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <HeartHandshake style={{ color: '#34d399', width: '18px', height: '18px' }} />
-            Adoption Breed Matchmaker
+            AI Adoption Compatibility Scorer
           </h4>
+          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
+            Adjust your living space and lifestyle parameters to calculate ML breed compatibility scores.
+          </p>
+
+          {/* User Input Selectors */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Living Space</label>
+              <select value={houseSize} onChange={e => setHouseSize(e.target.value)} style={{ width: '100%', background: '#04060c', border: '1px solid var(--border-glass)', borderRadius: '6px', padding: '5px', color: 'white', fontSize: '0.72rem', outline: 'none' }}>
+                <option value="Apartment">Apartment</option>
+                <option value="House with Small Yard">House (Small Yard)</option>
+                <option value="Large Yard">Large House &amp; Yard</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Daily Work Hours</label>
+              <select value={workHours} onChange={e => setWorkHours(e.target.value)} style={{ width: '100%', background: '#04060c', border: '1px solid var(--border-glass)', borderRadius: '6px', padding: '5px', color: 'white', fontSize: '0.72rem', outline: 'none' }}>
+                <option value="0-4 hrs">WFH / Part Time (0-4h)</option>
+                <option value="4-8 hrs">Standard Workday (4-8h)</option>
+                <option value="8+ hrs">Full Time (8+h)</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Children at Home</label>
+              <select value={hasChildren ? 'yes' : 'no'} onChange={e => setHasChildren(e.target.value === 'yes')} style={{ width: '100%', background: '#04060c', border: '1px solid var(--border-glass)', borderRadius: '6px', padding: '5px', color: 'white', fontSize: '0.72rem', outline: 'none' }}>
+                <option value="yes">Yes (Kids present)</option>
+                <option value="no">No children</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Monthly Pet Budget</label>
+              <select value={budget} onChange={e => setBudget(e.target.value)} style={{ width: '100%', background: '#04060c', border: '1px solid var(--border-glass)', borderRadius: '6px', padding: '5px', color: 'white', fontSize: '0.72rem', outline: 'none' }}>
+                <option value="$150 - $300">$150 - $300 / mo</option>
+                <option value="$300+">$300+ / mo</option>
+              </select>
+            </div>
+          </div>
+
+          <button onClick={handleCalculateAdoptionMatch} className="btn-primary" style={{ width: '100%', justifyContent: 'center', fontSize: '0.75rem', padding: '6px', marginBottom: '12px' }}>
+            Calculate Breed Compatibility Scores
+          </button>
+
+          {/* Results Display */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {adoptionResults.map((item, idx) => (
-              <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 10px', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 10px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <strong style={{ fontSize: '0.8rem', color: '#f8fafc' }}>{item.breed}</strong>
                   <p style={{ fontSize: '0.68rem', color: 'var(--text-dim)' }}>{item.reason}</p>
