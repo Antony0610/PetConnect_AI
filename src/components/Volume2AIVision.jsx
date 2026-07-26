@@ -35,12 +35,12 @@ export default function Volume2AIVision() {
     { sender: 'ai', text: 'Bruno is currently 420 meters from home and is active (Walking). Collar battery level is 88%. Today he has logged 42 mins walking, 12 mins running, and 9.5 hours resting.', contextUsed: 'Live ESP32 GPS + MPU6050 Activity Vector Context' }
   ]);
 
-  // 4. Interactive Adoption Recommendation Engine States
+  // 4. Interactive Adoption Recommendation Engine States (Indian Rupees Currency)
   const [houseSize, setHouseSize] = useState('Apartment');
   const [workHours, setWorkHours] = useState('4-8 hrs');
   const [hasChildren, setHasChildren] = useState(true);
   const [experience, setExperience] = useState('Intermediate');
-  const [budget, setBudget] = useState('$150 - $300');
+  const [budget, setBudget] = useState('₹5,000 - ₹10,000');
 
   const [adoptionResults, setAdoptionResults] = useState([
     { breed: 'Golden Retriever', score: 92, reason: 'Gentle temperament & excellent with children' },
@@ -156,7 +156,7 @@ export default function Volume2AIVision() {
         ))}
       </div>
 
-      {/* 1. Biometric Pet ID Scanner with 4 Interactive Drop Boxes */}
+      {/* 1. Biometric Pet ID Scanner */}
       {activeTab === 'identity' && (
         <div className="app-card" style={{ padding: '16px' }}>
           <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -167,9 +167,7 @@ export default function Volume2AIVision() {
             Drop or upload photos into all 4 biometric feature zones to generate a fused 1920-dimensional identity embedding.
           </p>
 
-          {/* 4 Photo Drop Boxes Grid */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
-            {/* Drop Box 1: Front Face */}
             <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(99, 102, 241, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
               <img src={frontFaceImage} alt="Front Face" style={{ width: '100%', height: '70px', objectFit: 'cover', borderRadius: '8px', marginBottom: '4px' }} />
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(99, 102, 241, 0.2)', color: '#a5b4fc', padding: '3px 6px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
@@ -178,7 +176,6 @@ export default function Volume2AIVision() {
               </label>
             </div>
 
-            {/* Drop Box 2: Profile Face */}
             <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(139, 92, 246, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
               <img src={profileFaceImage} alt="Profile Face" style={{ width: '100%', height: '70px', objectFit: 'cover', borderRadius: '8px', marginBottom: '4px' }} />
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(139, 92, 246, 0.2)', color: '#c084fc', padding: '3px 6px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
@@ -187,7 +184,6 @@ export default function Volume2AIVision() {
               </label>
             </div>
 
-            {/* Drop Box 3: Nose Print */}
             <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(16, 185, 129, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
               <img src={noseImage} alt="Nose Print" style={{ width: '100%', height: '70px', objectFit: 'cover', borderRadius: '8px', marginBottom: '4px' }} />
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '3px 6px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
@@ -196,7 +192,6 @@ export default function Volume2AIVision() {
               </label>
             </div>
 
-            {/* Drop Box 4: Full Body Coat Pattern */}
             <div style={{ background: 'rgba(0,0,0,0.4)', border: '2px dashed rgba(6, 182, 212, 0.4)', borderRadius: '12px', padding: '8px', textAlign: 'center' }}>
               <img src={bodyImage} alt="Full Body Coat" style={{ width: '100%', height: '70px', objectFit: 'cover', borderRadius: '8px', marginBottom: '4px' }} />
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'rgba(6, 182, 212, 0.2)', color: '#38bdf8', padding: '3px 6px', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, cursor: 'pointer' }}>
@@ -245,7 +240,7 @@ export default function Volume2AIVision() {
         </div>
       )}
 
-      {/* 2. Lost Pet Matcher with Dual Drop Boxes */}
+      {/* 2. Lost Pet Matcher */}
       {activeTab === 'matcher' && (
         <div className="app-card" style={{ padding: '16px' }}>
           <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -327,7 +322,7 @@ export default function Volume2AIVision() {
         </div>
       )}
 
-      {/* 4. Interactive Adoption Scorer */}
+      {/* 4. Interactive Adoption Scorer with Rupee Currency (₹) */}
       {activeTab === 'adoption' && (
         <div className="app-card" style={{ padding: '16px' }}>
           <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -335,10 +330,9 @@ export default function Volume2AIVision() {
             AI Adoption Compatibility Scorer
           </h4>
           <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '12px' }}>
-            Adjust your living space and lifestyle parameters to calculate ML breed compatibility scores.
+            Adjust your living space and Indian Rupee budget parameters to calculate breed compatibility scores.
           </p>
 
-          {/* User Input Selectors */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Living Space</label>
@@ -367,10 +361,11 @@ export default function Volume2AIVision() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Monthly Pet Budget</label>
+              <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Monthly Budget (₹ Rupees)</label>
               <select value={budget} onChange={e => setBudget(e.target.value)} style={{ width: '100%', background: '#04060c', border: '1px solid var(--border-glass)', borderRadius: '6px', padding: '5px', color: 'white', fontSize: '0.72rem', outline: 'none' }}>
-                <option value="$150 - $300">$150 - $300 / mo</option>
-                <option value="$300+">$300+ / mo</option>
+                <option value="₹3,000 - ₹8,000">₹3,000 - ₹8,000 / mo</option>
+                <option value="₹8,000 - ₹15,000">₹8,000 - ₹15,000 / mo</option>
+                <option value="₹15,000+">₹15,000+ / mo</option>
               </select>
             </div>
           </div>
@@ -379,7 +374,6 @@ export default function Volume2AIVision() {
             Calculate Breed Compatibility Scores
           </button>
 
-          {/* Results Display */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {adoptionResults.map((item, idx) => (
               <div key={idx} style={{ background: 'rgba(255,255,255,0.03)', padding: '8px 10px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
