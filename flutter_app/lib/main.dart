@@ -150,7 +150,7 @@ class _MainHomeScreenState extends State<MainHomeScreen> with SingleTickerProvid
             ),
             const SizedBox(width: 12),
             const Column(
-              crossAxisAlignment: CrossAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   "PetConnect AI",

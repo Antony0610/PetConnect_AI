@@ -1,5 +1,5 @@
-import 'package:flutter/material';
-import 'package:google_fonts/google_fonts';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/pet_model.dart';
 import '../theme/app_theme.dart';
 
@@ -13,7 +13,7 @@ class Volume1CoreView extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Banner Card
           Container(
@@ -28,7 +28,7 @@ class Volume1CoreView extends StatelessWidget {
               border: Border.all(color: AppTheme.primary.withOpacity(0.3)),
             ),
             child: Column(
-              crossAxisAlignment: CrossAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -69,12 +69,12 @@ class Volume1CoreView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppTheme.bgCard,
+              color: AppTheme.cardDark,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: const Color(0x1AFFFFFF)),
             ),
             child: Column(
-              crossAxisAlignment: CrossAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,7 +104,7 @@ class Volume1CoreView extends StatelessWidget {
                     ),
                     const SizedBox(width: 16),
                     Column(
-                      crossAxisAlignment: CrossAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(pet.name, style: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
                         Text("${pet.breed} • ${pet.age} Yrs", style: TextStyle(fontSize: 13, color: AppTheme.textMuted)),
@@ -138,8 +138,8 @@ class Volume1CoreView extends StatelessWidget {
           // GIS Services List
           Text("Nearby GIS Services (Metro Sector 4)", style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 10),
-          _serviceTile("Metro Veterinary Hospital & ER", "0.8 km away • Open 24/7", "4.9 ★", Icons.local_hospital, AppTheme.danger),
-          _serviceTile("Happy Tails Grooming Spa", "1.2 km away • Open Now", "4.8 ★", Icons.content_cut, AppTheme.accentCyan),
+          _serviceTile("Metro Veterinary Hospital & ER", "0.8 km away • Open 24/7", "4.9 ★", Icons.local_hospital, AppTheme.error),
+          _serviceTile("Happy Tails Grooming Spa", "1.2 km away • Open Now", "4.8 ★", Icons.content_cut, AppTheme.secondary),
           _serviceTile("Central Animal Rescue Shelter", "3.5 km away • Volunteers Welcome", "4.9 ★", Icons.volunteer_activism, AppTheme.success),
         ],
       ),
@@ -155,7 +155,7 @@ class Volume1CoreView extends StatelessWidget {
         border: Border.all(color: const Color(0x1AFFFFFF)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(label, style: const TextStyle(fontSize: 10, color: Color(0xFF64748B))),

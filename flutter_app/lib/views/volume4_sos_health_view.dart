@@ -1,5 +1,5 @@
-import 'package:flutter/material';
-import 'package:google_fonts/google_fonts';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/pet_model.dart';
 import '../theme/app_theme.dart';
 
@@ -14,7 +14,7 @@ class Volume4SOSHealthView extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Volume 4: SOS & QR Health Passport", style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 16),
@@ -23,7 +23,7 @@ class Volume4SOSHealthView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppTheme.bgCard,
+              color: AppTheme.cardDark,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: AppTheme.primary.withOpacity(0.3)),
             ),
@@ -56,7 +56,7 @@ class Volume4SOSHealthView extends StatelessWidget {
             height: 50,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.danger,
+                backgroundColor: AppTheme.error,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: onTriggerSOS,

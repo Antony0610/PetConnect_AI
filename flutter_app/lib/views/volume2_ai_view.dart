@@ -1,5 +1,5 @@
-import 'package:flutter/material';
-import 'package:google_fonts/google_fonts';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class Volume2AIView extends StatefulWidget {
@@ -17,7 +17,7 @@ class _Volume2AIViewState extends State<Volume2AIView> {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Header
           Text("Volume 2: AI & Computer Vision Intelligence", style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -63,12 +63,12 @@ class _Volume2AIViewState extends State<Volume2AIView> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.bgCard,
+        color: AppTheme.cardDark,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0x1AFFFFFF)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("MobileNetV3 AI Breed & Health Classifier", style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
@@ -103,12 +103,12 @@ class _Volume2AIViewState extends State<Volume2AIView> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.bgCard,
+        color: AppTheme.cardDark,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0x1AFFFFFF)),
       ),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Siamese Neural Network Facial Matcher", style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
@@ -145,12 +145,12 @@ class _Volume2AIViewState extends State<Volume2AIView> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.bgCard,
+        color: AppTheme.cardDark,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0x1AFFFFFF)),
       ),
       child: const Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("AI Smart Adoption Matchmaker", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SizedBox(height: 10),
@@ -166,12 +166,12 @@ class _Volume2AIViewState extends State<Volume2AIView> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppTheme.bgCard,
+        color: AppTheme.cardDark,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: const Color(0x1AFFFFFF)),
       ),
       child: const Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("AI Pet Health Symptom Triage Assistant", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           SizedBox(height: 8),

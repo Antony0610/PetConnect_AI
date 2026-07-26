@@ -1,5 +1,5 @@
-import 'package:flutter/material';
-import 'package:google_fonts/google_fonts';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 class Volume5ArchitectureView extends StatelessWidget {
@@ -10,7 +10,7 @@ class Volume5ArchitectureView extends StatelessWidget {
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
-        crossAxisAlignment: CrossAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("Volume 5: Master Architecture & Scorecard", style: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 16),
@@ -19,12 +19,12 @@ class Volume5ArchitectureView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppTheme.bgCard,
+              color: AppTheme.cardDark,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: const Color(0x1AFFFFFF)),
             ),
             child: Column(
-              crossAxisAlignment: CrossAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,7 +52,7 @@ class Volume5ArchitectureView extends StatelessWidget {
               border: Border.all(color: Colors.white12),
             ),
             child: const Column(
-              crossAxisAlignment: CrossAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("PostgreSQL 'pets' Table Definition", style: TextStyle(color: Color(0xFFA5B4FC), fontSize: 13, fontWeight: FontWeight.bold, fontFamily: 'monospace')),
                 SizedBox(height: 8),
