@@ -35,12 +35,12 @@ export default function Volume2AIVision() {
     { sender: 'ai', text: 'Bruno is currently 420 meters from home and is active (Walking). Collar battery level is 88%. Today he has logged 42 mins walking, 12 mins running, and 9.5 hours resting.', contextUsed: 'Live ESP32 GPS + MPU6050 Activity Vector Context' }
   ]);
 
-  // 4. Interactive Adoption Recommendation Engine States (Indian Rupees Currency)
+  // 4. Interactive Adoption Recommendation Engine States (Indian Rupees 1k-4k, 4k-8k, 8k-15k, 15k+)
   const [houseSize, setHouseSize] = useState('Apartment');
   const [workHours, setWorkHours] = useState('4-8 hrs');
   const [hasChildren, setHasChildren] = useState(true);
   const [experience, setExperience] = useState('Intermediate');
-  const [budget, setBudget] = useState('₹5,000 - ₹10,000');
+  const [budget, setBudget] = useState('₹4k - ₹8k');
 
   const [adoptionResults, setAdoptionResults] = useState([
     { breed: 'Golden Retriever', score: 92, reason: 'Gentle temperament & excellent with children' },
@@ -322,7 +322,7 @@ export default function Volume2AIVision() {
         </div>
       )}
 
-      {/* 4. Interactive Adoption Scorer with Rupee Currency (₹) */}
+      {/* 4. Interactive Adoption Scorer with Requested Rupee Tiers (1k-4k, 4k-8k, 8k-15k, 15k+) */}
       {activeTab === 'adoption' && (
         <div className="app-card" style={{ padding: '16px' }}>
           <h4 style={{ fontSize: '0.95rem', marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -361,11 +361,12 @@ export default function Volume2AIVision() {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Monthly Budget (₹ Rupees)</label>
+              <label style={{ display: 'block', fontSize: '0.65rem', color: 'var(--text-dim)', marginBottom: '2px' }}>Monthly Budget (Rupees)</label>
               <select value={budget} onChange={e => setBudget(e.target.value)} style={{ width: '100%', background: '#04060c', border: '1px solid var(--border-glass)', borderRadius: '6px', padding: '5px', color: 'white', fontSize: '0.72rem', outline: 'none' }}>
-                <option value="₹3,000 - ₹8,000">₹3,000 - ₹8,000 / mo</option>
-                <option value="₹8,000 - ₹15,000">₹8,000 - ₹15,000 / mo</option>
-                <option value="₹15,000+">₹15,000+ / mo</option>
+                <option value="₹1k - ₹4k">₹1k - ₹4k / mo</option>
+                <option value="₹4k - ₹8k">₹4k - ₹8k / mo</option>
+                <option value="₹8k - ₹15k">₹8k - ₹15k / mo</option>
+                <option value="₹15k+">₹15k+ / mo</option>
               </select>
             </div>
           </div>
