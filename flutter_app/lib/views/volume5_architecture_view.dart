@@ -19,7 +19,7 @@ class Volume5ArchitectureView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppTheme.cardDark,
+              color: AppTheme.bgCard,
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: const Color(0x1AFFFFFF)),
             ),

@@ -69,7 +69,7 @@ class Volume1CoreView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppTheme.cardDark,
+              color: AppTheme.bgCard,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: const Color(0x1AFFFFFF)),
             ),
@@ -138,8 +138,8 @@ class Volume1CoreView extends StatelessWidget {
           // GIS Services List
           Text("Nearby GIS Services (Metro Sector 4)", style: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
           const SizedBox(height: 10),
-          _serviceTile("Metro Veterinary Hospital & ER", "0.8 km away • Open 24/7", "4.9 ★", Icons.local_hospital, AppTheme.error),
-          _serviceTile("Happy Tails Grooming Spa", "1.2 km away • Open Now", "4.8 ★", Icons.content_cut, AppTheme.secondary),
+          _serviceTile("Metro Veterinary Hospital & ER", "0.8 km away • Open 24/7", "4.9 ★", Icons.local_hospital, AppTheme.danger),
+          _serviceTile("Happy Tails Grooming Spa", "1.2 km away • Open Now", "4.8 ★", Icons.content_cut, AppTheme.accentCyan),
           _serviceTile("Central Animal Rescue Shelter", "3.5 km away • Volunteers Welcome", "4.9 ★", Icons.volunteer_activism, AppTheme.success),
         ],
       ),

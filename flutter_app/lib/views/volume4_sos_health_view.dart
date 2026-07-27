@@ -23,7 +23,7 @@ class Volume4SOSHealthView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppTheme.cardDark,
+              color: AppTheme.bgCard,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: AppTheme.primary.withOpacity(0.3)),
             ),
@@ -56,7 +56,7 @@ class Volume4SOSHealthView extends StatelessWidget {
             height: 50,
             child: ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.error,
+                backgroundColor: AppTheme.danger,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: onTriggerSOS,
