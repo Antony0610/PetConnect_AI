@@ -12,6 +12,11 @@ class AppTheme {
   static const Color cardLight = Color(0xFFFFFFFF);
   static const Color cardDark = Color(0xEE0F172A);
   
+  // Color Aliases for View Compatibility
+  static const Color bgCard = cardDark;
+  static const Color danger = Color(0xFFEF4444);
+  static const Color accentCyan = Color(0xFF38BDF8);
+
   static const Color textMain = Color(0xFF0F172A);     // Slate 900
   static const Color textMuted = Color(0xFF64748B);    // Slate 500
   
